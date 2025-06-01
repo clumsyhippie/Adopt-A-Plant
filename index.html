@@ -1,1742 +1,1591 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Tamagotchi</title>
+    <title>GROWI - Grow &amp; Care For Your Own Plant!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
         body {
-            font-family: 'VT323', monospace;
-            background-color: #a8d5ba;
+            font-family: 'Press Start 2P', cursive;
+            background-image: url('Bkg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            color: #333;
+            background-color: #f0f0f0;
         }
         
-        .tamagotchi {
-            width: 400px;
-            height: 600px;
-            background-color: #ff9eb1;
-            border-radius: 50px;
-            border: 12px solid #e57383;
+        .device {
             position: relative;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            padding: 25px;
+            width: 450px;
+            height: 750px;
+            border-radius: 30px;
+            background-color: #4CAF50; /* Default green color */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transition: background-color 0.5s;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: all 0.5s ease;
+            padding: 25px;
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
         }
         
-        /* Theme: Pink (Default) */
-        .theme-pink {
-            background-color: #ff9eb1;
-            border-color: #e57383;
+        .device::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 8px solid rgba(0, 0, 0, 0.2);
+            border-radius: 30px;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
         }
         
-        /* Theme: Blue */
-        .theme-blue {
-            background-color: #9ecfff;
-            border-color: #7ab5e6;
-        }
-        
-        /* Theme: Green */
-        .theme-green {
-            background-color: #a8e6a8;
-            border-color: #7ac77a;
-        }
-        
-        /* Theme: Purple */
-        .theme-purple {
-            background-color: #d9a8ff;
-            border-color: #b77ae6;
-        }
-        
-        .screen-container {
-            width: 320px;
-            height: 280px;
-            background-color: #d0f0c0;
-            border-radius: 15px;
-            border: 8px solid #90c070;
-            margin-top: 20px;
-            overflow: hidden;
+        /* Heart pattern */
+        .pattern-hearts {
             position: relative;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: rotate(45deg);
+            z-index: 0;
+        }
+        
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+        
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+        
+        /* Striped pattern */
+        .pattern-striped {
+            position: relative;
+        }
+        
+        .pattern-striped::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.3) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0.3) 75%, 
+                transparent 75%, 
+                transparent);
+            background-size: 30px 30px;
+            z-index: 0;
+            pointer-events: none;
+            border-radius: 30px;
+        }
+        
+        /* Polka dot pattern */
+        .pattern-polka {
+            position: relative;
+        }
+        
+        .pattern-polka::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(
+                circle, 
+                rgba(255, 255, 255, 0.4) 8px, 
+                transparent 8px
+            );
+            background-size: 30px 30px;
+            z-index: 0;
+            pointer-events: none;
+            border-radius: 30px;
         }
         
         .screen {
-            width: 100%;
-            height: 100%;
+            width: 380px;
+            height: 380px;
+            background-color: #c3e6cb;
+            border-radius: 15px;
+            border: 10px solid #333;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             position: relative;
+            image-rendering: pixelated;
+            z-index: 1;
         }
         
-        .plant-container {
-            position: relative;
-            height: 160px;
-            width: 160px;
+        .screen-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-        
-        .pot-image {
-            width: 100px;
-            height: 80px;
+            padding: 15px;
             position: relative;
-            z-index: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .plant-image {
-            width: 120px;
-            height: 120px;
-            position: absolute;
-            bottom: 60px;
-            z-index: 3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.5s ease;
-        }
-        
-        .plant-image.growing {
-            animation: grow 0.5s ease;
-        }
-        
-        @keyframes grow {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        
-        .soil {
-            width: 80px;
-            height: 20px;
-            background-color: #8b4513;
-            border-radius: 50% 50% 0 0;
-            position: absolute;
-            bottom: 80px;
             z-index: 1;
         }
         
         .status-bar {
-            width: 100%;
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            font-size: 20px;
-            position: absolute;
-            top: 0;
-            background-color: rgba(255, 255, 255, 0.7);
+            align-items: center;
+            margin-bottom: 12px; /* Increased from 8px to 12px */
+            height: 30px; /* Added fixed height to ensure consistent space */
         }
         
-        .status-item {
+        .water-container {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
         
-        .status-label {
-            margin-right: 5px;
+        .water-label {
+            font-size: 10px;
+            color: #333;
         }
         
-        .status-value {
-            font-weight: bold;
+        .water-bar {
+            width: 120px;
+            height: 18px;
+            background-color: #ddd;
+            border: 3px solid #333;
+            position: relative;
         }
         
-        .message {
-            position: absolute;
-            bottom: 15px;
-            width: 100%;
+        .water-level {
+            height: 100%;
+            background-color: #4fc3f7;
+            width: 25%;
+            transition: width 0.5s;
+        }
+        
+        .water-percentage {
+            font-size: 10px;
+            color: #333;
+        }
+        
+        .growth-stage {
+            font-size: 12px;
+            background-color: #333;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap; /* Prevent text wrapping */
+            min-width: 90px; /* Ensure enough width for the text */
             text-align: center;
-            font-size: 20px;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 5px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         
-        .name-display {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .plant-name {
             text-align: center;
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size: 14px;
+            margin: 8px 0 12px 0; /* Increased bottom margin from 8px to 12px */
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .plant-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .plant-image {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+        
+        .plant-message {
             position: absolute;
-            top: 45px;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            font-style: italic;
+            background-color: rgba(51, 51, 51, 0.8);
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            margin: 0 15px;
         }
         
         .buttons-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
             gap: 20px;
-            width: 100%;
-            margin-top: 40px;
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
         }
         
-        .action-btn {
-            color: #333;
-            border: none;
-            border-radius: 10px;
-            padding: 15px 10px;
-            font-size: 20px;
-            font-family: 'VT323', monospace;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            width: 100%;
-            height: 55px;
+        .main-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
         }
         
-        .action-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
-        
-        .action-btn:active:not(:disabled) {
-            transform: translateY(2px);
-        }
-        
-        .action-btn:disabled {
-            background-color: #c0c0c0;
-            color: #808080;
-            cursor: not-allowed;
-            box-shadow: 0 4px 0 #a0a0a0;
-        }
-        
-        #waterBtn {
-            background-color: #6aadff;
-            box-shadow: 0 4px 0 #4a8dd0;
-        }
-        
-        #waterBtn:hover:not(:disabled) {
-            background-color: #5a9dff;
-        }
-        
-        #waterBtn:active:not(:disabled) {
-            box-shadow: 0 2px 0 #4a8dd0;
-        }
-        
-        #fertilizeBtn {
-            background-color: #f0d078;
-            box-shadow: 0 4px 0 #d0b058;
-        }
-        
-        #fertilizeBtn:hover:not(:disabled) {
-            background-color: #e0c068;
-        }
-        
-        #fertilizeBtn:active:not(:disabled) {
-            box-shadow: 0 2px 0 #d0b058;
-        }
-        
-        .menu-container {
+        .secondary-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            width: 100%;
-            margin-top: 20px;
         }
         
-        .menu-btn {
-            background-color: #e0e0e0;
-            color: #333;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 10px;
-            font-size: 18px;
-            font-family: 'VT323', monospace;
+        .btn {
+            padding: 12px;
+            border: 4px solid #333;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            text-align: center;
-            box-shadow: 0 3px 0 #b0b0b0;
+            box-shadow: 0 4px 0 #333;
         }
         
-        .menu-btn:hover {
-            background-color: #d0d0d0;
-            transform: translateY(-2px);
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #333;
         }
         
-        .menu-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #b0b0b0;
+        .btn-water {
+            background-color: #4fc3f7;
+            color: #333;
+            flex: 1;
+            padding: 15px 12px;
+            font-size: 14px;
         }
         
-        .modal {
-            position: fixed;
+        .btn-fertilize {
+            background-color: #ffeb3b;
+            color: #333;
+            flex: 1;
+            padding: 15px 12px;
+            font-size: 14px;
+        }
+        
+        .btn-fertilize.disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: #9c27b0;
+            color: white;
+        }
+        
+        .power-button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .power-button {
+            width: 65px;
+            height: 65px;
+            background-color: #e57373;
+            border: 4px solid #333;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .power-button:active {
+            transform: scale(0.95);
+        }
+        
+        .power-icon {
+            width: 30px;
+            height: 30px;
+            position: relative;
+        }
+        
+        .power-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 3px;
+            height: 15px;
+            background-color: white;
+            transform: translateX(-50%);
+        }
+        
+        .power-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            clip-path: polygon(0 15%, 100% 15%, 100% 100%, 0 100%);
+        }
+        
+        .screen-off {
+            background-color: #333;
+        }
+        
+        .screen-off .screen-content,
+        .screen-off .startup-screen,
+        .screen-off .shutdown-screen {
+            display: none !important;
+        }
+        
+        .startup-screen, .shutdown-screen {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
+            color: #0f0;
+            z-index: 10;
         }
         
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
+        .loading-bar-container {
+            width: 80%;
+            height: 25px;
+            border: 3px solid #0f0;
+            margin-top: 25px;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            background-color: #0f0;
+            width: 0%;
+        }
+        
+        .modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            padding: 15px;
+            box-sizing: border-box;
         }
         
         .modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            width: 350px;
-            max-width: 90%;
+            background-color: #c3e6cb;
+            border: 6px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            font-size: 10px;
         }
         
         .modal-title {
-            font-size: 28px;
-            margin-bottom: 20px;
             text-align: center;
-        }
-        
-        .modal-input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            font-family: 'VT323', monospace;
-            font-size: 22px;
-            border: 2px solid #90c070;
-            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
         }
         
         .modal-buttons {
             display: flex;
             justify-content: center;
             gap: 15px;
+            margin-top: 15px;
         }
         
         .modal-btn {
-            padding: 10px 25px;
-            background-color: #90c070;
-            border: none;
-            border-radius: 8px;
-            font-family: 'VT323', monospace;
-            font-size: 20px;
+            padding: 8px 15px;
+            border: 3px solid #333;
+            border-radius: 6px;
+            font-size: 10px;
             cursor: pointer;
-            transition: all 0.2s;
-            color: #333;
-        }
-        
-        .modal-btn:hover {
-            background-color: #80b060;
-            transform: translateY(-2px);
-        }
-        
-        .modal-btn:active {
-            transform: translateY(2px);
-        }
-        
-        .plant-selection {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            background-color: #9c27b0;
+            color: white;
         }
         
         .plant-option {
-            width: 100%;
-            height: 100px;
-            background-color: #f0f0f0;
-            border-radius: 8px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            margin-bottom: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 16px;
-            color: #666;
-            position: relative;
-            overflow: hidden;
+            padding: 8px;
+            border-radius: 6px;
         }
         
         .plant-option:hover {
-            background-color: #e0e0e0;
-            transform: translateY(-2px);
+            background-color: rgba(0, 0, 0, 0.1);
         }
         
         .plant-option.selected {
-            background-color: #d0f0c0;
-            border: 2px solid #90c070;
-            color: #333;
+            background-color: rgba(0, 0, 0, 0.2);
         }
         
-        .plant-option-name {
-            margin-top: 5px;
-            font-weight: bold;
+        .color-wheel {
+            width: 100%;
+            height: 40px;
+            margin: 15px 0;
+            border-radius: 20px;
+            border: 3px solid #333;
+            background: linear-gradient(to right, 
+                hsl(0, 100%, 85%), 
+                hsl(60, 100%, 85%), 
+                hsl(120, 100%, 85%), 
+                hsl(180, 100%, 85%), 
+                hsl(240, 100%, 85%), 
+                hsl(300, 100%, 85%), 
+                hsl(360, 100%, 85%)
+            );
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
         }
         
-        .stats-grid {
+        .color-wheel::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 40px;
+            background: white;
+            border: 3px solid #333;
+            border-radius: 12px;
+        }
+        
+        .color-wheel::-moz-range-thumb {
+            width: 25px;
+            height: 40px;
+            background: white;
+            border: 3px solid #333;
+            border-radius: 12px;
+        }
+        
+        .pattern-options, .personality-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .pattern-option, .personality-option {
+            padding: 8px;
+            border: 3px solid #333;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .pattern-option.selected, .personality-option.selected {
+            background-color: #9c27b0;
+            color: white;
         }
         
         .stats-item {
-            font-size: 20px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
         }
         
-        .stats-label {
-            font-weight: bold;
+        .hidden {
+            display: none;
         }
         
-        .help-item {
-            margin-bottom: 10px;
-            font-size: 18px;
+        .plant-animation {
+            display: none;
         }
         
-        .water-animation {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            opacity: 0;
-            background-color: rgba(79, 164, 255, 0.2);
-            transition: opacity 0.3s;
-        }
-        
-        .water-animation.active {
-            opacity: 1;
-        }
-        
-        .fertilize-animation {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            opacity: 0;
-            background-color: rgba(240, 208, 120, 0.2);
-            transition: opacity 0.3s;
-        }
-        
-        .fertilize-animation.active {
-            opacity: 1;
-        }
-        
-        .settings-section {
-            margin-bottom: 20px;
-        }
-        
-        .settings-title {
-            font-size: 22px;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        
-        .theme-options, .personality-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .theme-option, .personality-option {
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 18px;
-        }
-        
-        .theme-option:hover, .personality-option:hover {
-            transform: translateY(-2px);
-        }
-        
-        .theme-option.selected, .personality-option.selected {
-            border: 2px solid #90c070;
-            font-weight: bold;
-        }
-        
-        .theme-pink-option {
-            background-color: #ffccd5;
-            color: #e57383;
-        }
-        
-        .theme-blue-option {
-            background-color: #cce5ff;
-            color: #7ab5e6;
-        }
-        
-        .theme-green-option {
-            background-color: #d5f5d5;
-            color: #7ac77a;
-        }
-        
-        .theme-purple-option {
-            background-color: #e5d5ff;
-            color: #b77ae6;
-        }
-        
-        .personality-cheerful {
-            background-color: #fff2cc;
-            color: #e6b800;
-        }
-        
-        .personality-chill {
-            background-color: #d1e7dd;
-            color: #20c997;
-        }
-        
-        .personality-funny {
-            background-color: #f8d7da;
-            color: #dc3545;
-        }
-        
-        .personality-moody {
-            background-color: #212529;
-            color: #adb5bd;
-        }
-        
-        .reset-btn {
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-family: 'VT323', monospace;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .plant-static {
             display: block;
-            margin: 20px auto 0;
-            box-shadow: 0 3px 0 #d64545;
         }
         
-        .reset-btn:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
+        input[type="text"] {
+            font-family: 'Press Start 2P', cursive;
+            image-rendering: pixelated;
         }
         
-        .reset-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #d64545;
-        }
-        
-        /* Fallback styles for missing images */
-        .plant-fallback {
-            width: 100px;
-            height: 100px;
-            background-color: rgba(0, 128, 0, 0.2);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 16px;
-            line-height: 1.2;
-        }
-        
-        .pot-fallback {
-            width: 80px;
-            height: 60px;
-            background-color: #8b4513;
-            border-radius: 10px 10px 50% 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-        
-        .plant-option-img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
+        /* Heart pattern container */
+        .heart-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
     </style>
-</head>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.hidden{display:none}.w-full{width:100%}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.border-2{border-width:2px}.border-gray-800{--tw-border-opacity:1;border-color:rgb(31 41 55 / var(--tw-border-opacity, 1))}.p-2{padding:0.5rem}.text-center{text-align:center}.text-xs{font-size:0.75rem;line-height:1rem}</style></head>
 <body>
-    <div class="tamagotchi theme-pink" id="tamagotchi">
-        <div class="screen-container">
-            <div class="screen">
+    <div id="device" class="device" style="background-color: rgb(255, 179, 191);">
+        <div id="screen" class="screen">
+            <div id="screenContent" class="screen-content" style="visibility: visible;">
                 <div class="status-bar">
-                    <div class="status-item">
-                        <span class="status-label">Water:</span>
-                        <span class="status-value" id="waterLevel">25%</span>
+                    <div class="water-container">
+                        <div class="water-label">WATER:</div>
+                        <div class="water-bar">
+                            <div id="waterLevel" class="water-level" style="width: 25%;"></div>
+                        </div>
+                        <div id="waterPercentage" class="water-percentage">25%</div>
                     </div>
-                    <div class="status-item">
-                        <span class="status-label">Growth Stage:</span>
-                        <span class="status-value" id="growthLevel">1</span>
-                    </div>
+                    <div id="growthStage" class="growth-stage">Stage 1</div>
                 </div>
-                
-                <div class="name-display" id="plantName">Plant Friend</div>
-                
+                <div id="plantName" class="plant-name">Sunny</div>
                 <div class="plant-container">
-                    <div class="plant-image" id="plantImage"><div class="plant-fallback">Sunflower<br>Stage 1</div></div>
-                    <div class="soil"></div>
-                    <div class="pot-image"><div class="pot-fallback">Pot</div></div>
+                    <div id="plantImage" class="plant-image">
+                    <div class="plant-static" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" fill="#4CAF50"></circle>
+                            <text x="60" y="65" text-anchor="middle" fill="white" font-size="14">Stage 1</text>
+                        </svg>
+                    </div>
                 </div>
-                
-                <div class="message" id="message">Water would make me happy!</div>
-                
-                <div class="water-animation" id="waterAnimation"></div>
-                <div class="fertilize-animation" id="fertilizeAnimation"></div>
+                    <div id="plantMessage" class="plant-message">What a beautiful day!</div>
+                </div>
+            </div>
+            
+            <!-- Startup Screen (inside the screen) -->
+            <div id="startupScreen" class="startup-screen" style="display: none;">
+                <div>GROWI v1.0</div>
+                <div>BOOTING UP...</div>
+                <div class="loading-bar-container">
+                    <div id="startupLoadingBar" class="loading-bar" style="width: 100%;"></div>
+                </div>
+            </div>
+            
+            <!-- Shutdown Screen (inside the screen) -->
+            <div id="shutdownScreen" class="shutdown-screen hidden">
+                <div>SHUTTING DOWN...</div>
             </div>
         </div>
         
         <div class="buttons-container">
-            <button class="action-btn" id="waterBtn">WATER</button>
-            <button class="action-btn" id="fertilizeBtn">FERTILIZE</button>
+            <div class="main-buttons">
+                <div id="btnWater" class="btn btn-water">WATER</div>
+                <div id="btnFertilize" class="btn btn-fertilize">FERTILIZE</div>
+            </div>
+            <div class="secondary-buttons">
+                <div id="btnRename" class="btn btn-secondary">RENAME</div>
+                <div id="btnChangePlant" class="btn btn-secondary">CHANGE PLANT</div>
+                <div id="btnStats" class="btn btn-secondary">STATS</div>
+                <div id="btnSettings" class="btn btn-secondary">SETTINGS</div>
+            </div>
         </div>
         
-        <div class="menu-container">
-            <button class="menu-btn" id="nameBtn">RENAME</button>
-            <button class="menu-btn" id="changeBtn">CHANGE PLANT</button>
-            <button class="menu-btn" id="statsBtn">STATS</button>
-            <button class="menu-btn" id="settingsBtn">SETTINGS</button>
-        </div>
-    </div>
-    
-    <!-- Name Modal -->
-    <div class="modal" id="nameModal">
-        <div class="modal-content">
-            <h2 class="modal-title">Name Your Plant</h2>
-            <input type="text" class="modal-input" id="nameInput" placeholder="Enter a name" maxlength="12">
-            <div class="modal-buttons">
-                <button class="modal-btn" id="saveNameBtn">SAVE</button>
-                <button class="modal-btn" id="cancelNameBtn">CANCEL</button>
+        <div class="power-button-container">
+            <div id="powerButton" class="power-button">
+                <div class="power-icon"></div>
             </div>
         </div>
-    </div>
-    
-    <!-- Plant Selection Modal -->
-    <div class="modal" id="plantModal">
-        <div class="modal-content">
-            <h2 class="modal-title">Choose Your Plant</h2>
-            <div class="plant-selection">
-                <div class="plant-option selected" data-plant="Sunflower">
-                    <img src="Plant/Sunflower1.png" alt="Sunflower" class="plant-option-img" onerror="this.style.display='none'" style="display: none;">
-                    <div class="plant-option-name">Sunflower</div>
-                </div>
-                <div class="plant-option" data-plant="Rose">
-                    <img src="Plant/Rose1.png" alt="Rose" class="plant-option-img" onerror="this.style.display='none'" style="display: none;">
-                    <div class="plant-option-name">Rose</div>
-                </div>
-                <div class="plant-option" data-plant="Tulip">
-                    <img src="Plant/Tulip1.png" alt="Tulip" class="plant-option-img" onerror="this.style.display='none'" style="display: none;">
-                    <div class="plant-option-name">Tulip</div>
-                </div>
-                <div class="plant-option" data-plant="Cactus">
-                    <img src="Plant/Cactus1.png" alt="Cactus" class="plant-option-img" onerror="this.style.display='none'" style="display: none;">
-                    <div class="plant-option-name">Cactus</div>
+        
+        <!-- Heart pattern container -->
+        <div id="heartPattern" class="heart-pattern" style="display: none;"><div class="heart" style="left: 39.5722px; top: 33.2616px;"></div><div class="heart" style="left: 92.5886px; top: 30.6195px;"></div><div class="heart" style="left: 153.504px; top: 32.387px;"></div><div class="heart" style="left: 215.626px; top: 30.4217px;"></div><div class="heart" style="left: 276.142px; top: 36.8703px;"></div><div class="heart" style="left: 334.082px; top: 38.7339px;"></div><div class="heart" style="left: 391.373px; top: 37.0311px;"></div><div class="heart" style="left: 36.6509px; top: 94.4586px;"></div><div class="heart" style="left: 92.5771px; top: 98.1838px;"></div><div class="heart" style="left: 156.022px; top: 91.2631px;"></div><div class="heart" style="left: 213.235px; top: 99.3494px;"></div><div class="heart" style="left: 278.763px; top: 98.3278px;"></div><div class="heart" style="left: 337.834px; top: 93.1903px;"></div><div class="heart" style="left: 396.727px; top: 91.0269px;"></div><div class="heart" style="left: 36.1784px; top: 153.734px;"></div><div class="heart" style="left: 93.8246px; top: 151.154px;"></div><div class="heart" style="left: 151.673px; top: 153.99px;"></div><div class="heart" style="left: 219.145px; top: 153.377px;"></div><div class="heart" style="left: 276.663px; top: 158.773px;"></div><div class="heart" style="left: 334.626px; top: 150.926px;"></div><div class="heart" style="left: 397.992px; top: 156.625px;"></div><div class="heart" style="left: 37.6902px; top: 214.765px;"></div><div class="heart" style="left: 91.6158px; top: 218.963px;"></div><div class="heart" style="left: 159.822px; top: 213.213px;"></div><div class="heart" style="left: 212.622px; top: 216.859px;"></div><div class="heart" style="left: 278.875px; top: 218.239px;"></div><div class="heart" style="left: 333.674px; top: 219.314px;"></div><div class="heart" style="left: 397.782px; top: 217.877px;"></div><div class="heart" style="left: 39.7248px; top: 276.573px;"></div><div class="heart" style="left: 93.565px; top: 276.724px;"></div><div class="heart" style="left: 154.27px; top: 273.823px;"></div><div class="heart" style="left: 217.397px; top: 271.105px;"></div><div class="heart" style="left: 279.716px; top: 279.458px;"></div><div class="heart" style="left: 335.325px; top: 279.258px;"></div><div class="heart" style="left: 396.857px; top: 273.781px;"></div><div class="heart" style="left: 32.3316px; top: 338.463px;"></div><div class="heart" style="left: 92.6694px; top: 333.766px;"></div><div class="heart" style="left: 154.468px; top: 333.493px;"></div><div class="heart" style="left: 215.644px; top: 331.002px;"></div><div class="heart" style="left: 277.304px; top: 334.256px;"></div><div class="heart" style="left: 338.949px; top: 334.189px;"></div><div class="heart" style="left: 395.311px; top: 339.507px;"></div><div class="heart" style="left: 39.5834px; top: 392.898px;"></div><div class="heart" style="left: 94.0567px; top: 398.852px;"></div><div class="heart" style="left: 151.866px; top: 390.441px;"></div><div class="heart" style="left: 213.033px; top: 397.242px;"></div><div class="heart" style="left: 272.001px; top: 394.808px;"></div><div class="heart" style="left: 336.702px; top: 396.811px;"></div><div class="heart" style="left: 390.663px; top: 398.683px;"></div><div class="heart" style="left: 34.528px; top: 450.512px;"></div><div class="heart" style="left: 97.341px; top: 452.481px;"></div><div class="heart" style="left: 154.355px; top: 456.089px;"></div><div class="heart" style="left: 217.699px; top: 453.832px;"></div><div class="heart" style="left: 277.118px; top: 459.338px;"></div><div class="heart" style="left: 337.637px; top: 450.817px;"></div><div class="heart" style="left: 390.911px; top: 459.632px;"></div><div class="heart" style="left: 32.4735px; top: 518.391px;"></div><div class="heart" style="left: 96.8303px; top: 511.265px;"></div><div class="heart" style="left: 150.358px; top: 514.354px;"></div><div class="heart" style="left: 211.356px; top: 515.45px;"></div><div class="heart" style="left: 275.942px; top: 519.735px;"></div><div class="heart" style="left: 331.937px; top: 516.218px;"></div><div class="heart" style="left: 391.982px; top: 516.234px;"></div><div class="heart" style="left: 37.965px; top: 571.945px;"></div><div class="heart" style="left: 91.5067px; top: 571.539px;"></div><div class="heart" style="left: 157.347px; top: 575.248px;"></div><div class="heart" style="left: 214.191px; top: 571.269px;"></div><div class="heart" style="left: 273.924px; top: 572.657px;"></div><div class="heart" style="left: 332.591px; top: 571.495px;"></div><div class="heart" style="left: 394.558px; top: 573.996px;"></div><div class="heart" style="left: 30.8148px; top: 636.212px;"></div><div class="heart" style="left: 92.6813px; top: 634.881px;"></div><div class="heart" style="left: 154.97px; top: 634.366px;"></div><div class="heart" style="left: 211.848px; top: 630.573px;"></div><div class="heart" style="left: 270.59px; top: 635.437px;"></div><div class="heart" style="left: 337.106px; top: 637.088px;"></div><div class="heart" style="left: 399.003px; top: 630.793px;"></div><div class="heart" style="left: 33.0773px; top: 692.315px;"></div><div class="heart" style="left: 95.1675px; top: 699.256px;"></div><div class="heart" style="left: 156.203px; top: 699.612px;"></div><div class="heart" style="left: 210.012px; top: 699.973px;"></div><div class="heart" style="left: 272.564px; top: 692.735px;"></div><div class="heart" style="left: 338.765px; top: 695.508px;"></div><div class="heart" style="left: 392.812px; top: 693.133px;"></div></div>
+        
+        <!-- Rename Modal -->
+        <div id="renameModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">RENAME YOUR PLANT</div>
+                <input type="text" id="newPlantName" maxlength="12" class="w-full p-2 border-2 border-gray-800 rounded text-xs mb-2">
+                <div class="modal-buttons">
+                    <div id="saveRenameBtn" class="modal-btn">SAVE</div>
+                    <div id="cancelRenameBtn" class="modal-btn">CANCEL</div>
                 </div>
             </div>
-            <div class="modal-buttons">
-                <button class="modal-btn" id="savePlantBtn">SAVE</button>
-                <button class="modal-btn" id="cancelPlantBtn">CANCEL</button>
+        </div>
+        
+        <!-- Change Plant Modal -->
+        <div id="changePlantModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">CHOOSE A PLANT</div>
+                <div id="plantOptions">
+                    <div class="plant-option selected" data-plant="Sunflower">Sunflower</div>
+                    <div class="plant-option" data-plant="Rose">Rose</div>
+                    <div class="plant-option" data-plant="Fern">Fern</div>
+                    <div class="plant-option" data-plant="Cactus">Cactus</div>
+                </div>
+                <div class="modal-buttons">
+                    <div id="savePlantBtn" class="modal-btn">SAVE</div>
+                    <div id="cancelPlantBtn" class="modal-btn">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Change Plant Confirmation Modal -->
+        <div id="changePlantConfirmModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">ARE YOU SURE?</div>
+                <p class="text-center mb-3">Changing your plant will reset your growth progress!</p>
+                <div class="modal-buttons">
+                    <div id="confirmChangePlantBtn" class="modal-btn" style="background-color: #f44336;">CHANGE</div>
+                    <div id="cancelChangePlantBtn" class="modal-btn">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Modal -->
+        <div id="statsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">PLANT STATS</div>
+                <div id="statsContent">
+                    <div class="stats-item">
+                        <span>Name:</span>
+                        <span id="statName">Sunny</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Water:</span>
+                        <span id="statWater">25%</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Age:</span>
+                        <span id="statAge">0 days</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Species:</span>
+                        <span id="statSpecies">Sunflower</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Growth Stage:</span>
+                        <span id="statGrowth">1</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Times Watered:</span>
+                        <span id="statWatered">0</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Personality:</span>
+                        <span id="statPersonality">Cheerful</span>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <div id="closeStatsBtn" class="modal-btn">CLOSE</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-title">SETTINGS</div>
+                
+                <div class="mb-2">
+                    <div class="mb-1">Case Color:</div>
+                    <input type="range" id="colorPicker" class="color-wheel" min="0" max="360" value="120">
+                </div>
+                
+                <div class="mb-2">
+                    <div class="mb-1">Pattern:</div>
+                    <div class="pattern-options">
+                        <div class="pattern-option selected" data-pattern="plain">Plain</div>
+                        <div class="pattern-option" data-pattern="hearts">Hearts</div>
+                        <div class="pattern-option" data-pattern="striped">Striped</div>
+                        <div class="pattern-option" data-pattern="polka">Polka Dots</div>
+                    </div>
+                </div>
+                
+                <div class="mb-2">
+                    <div class="mb-1">Personality:</div>
+                    <div class="personality-options">
+                        <div class="personality-option selected" data-personality="cheerful">Cheerful</div>
+                        <div class="personality-option" data-personality="funny">Funny</div>
+                        <div class="personality-option" data-personality="chill">Chill</div>
+                        <div class="personality-option" data-personality="moody">Moody</div>
+                    </div>
+                </div>
+                
+                <div class="mb-2">
+                    <div id="helpBtn" class="modal-btn w-full mb-2">HELP</div>
+                    <div id="resetBtn" class="modal-btn w-full" style="background-color: #f44336;">RESET PLANT</div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <div id="saveSettingsBtn" class="modal-btn">SAVE</div>
+                    <div id="cancelSettingsBtn" class="modal-btn">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">HELP</div>
+                <div class="overflow-y-auto text-xs">
+                    <p class="mb-2"><b>WATER:</b> Water your plant to increase water level. Plants need water to survive!</p>
+                    <p class="mb-2"><b>FERTILIZE:</b> Give your plant nutrients once every 24 hours to help it grow to the next stage.</p>
+                    <p class="mb-2"><b>RENAME:</b> Give your plant a new name.</p>
+                    <p class="mb-2"><b>CHANGE PLANT:</b> Choose a different plant species. This will reset your growth progress.</p>
+                    <p class="mb-2"><b>STATS:</b> View detailed information about your plant.</p>
+                    <p class="mb-2"><b>SETTINGS:</b> Customize your GROWI device and plant personality.</p>
+                    <p class="mb-2"><b>POWER:</b> Turn your GROWI device on or off.</p>
+                </div>
+                <div class="modal-buttons">
+                    <div id="closeHelpBtn" class="modal-btn">CLOSE</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reset Confirmation Modal -->
+        <div id="resetConfirmModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-title">ARE YOU SURE?</div>
+                <p class="text-center mb-3">This will reset your plant and all progress will be lost!</p>
+                <div class="modal-buttons">
+                    <div id="confirmResetBtn" class="modal-btn" style="background-color: #f44336;">RESET</div>
+                    <div id="cancelResetBtn" class="modal-btn">CANCEL</div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <!-- Stats Modal -->
-    <div class="modal" id="statsModal">
-        <div class="modal-content">
-            <h2 class="modal-title">Plant Stats</h2>
-            <div class="stats-grid">
-                <div class="stats-item">
-                    <span class="stats-label">Name:</span>
-                    <span id="statsName">Plant Friend</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Type:</span>
-                    <span id="statsType">Sunflower</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Water:</span>
-                    <span id="statsWater">25%</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Growth:</span>
-                    <span id="statsGrowth">1</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Age:</span>
-                    <span id="statsAge">0 days</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Watered:</span>
-                    <span id="statsWatered">0 times</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Fertilized:</span>
-                    <span id="statsFertilized">0 times</span>
-                </div>
-                <div class="stats-item">
-                    <span class="stats-label">Personality:</span>
-                    <span id="statsPersonality">Cheerful</span>
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-btn" id="closeStatsBtn">CLOSE</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Settings Modal -->
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <h2 class="modal-title">Settings</h2>
-            
-            <div class="settings-section">
-                <div class="settings-title">Theme Color</div>
-                <div class="theme-options">
-                    <div class="theme-option theme-pink-option selected" data-theme="pink">Pink</div>
-                    <div class="theme-option theme-blue-option" data-theme="blue">Blue</div>
-                    <div class="theme-option theme-green-option" data-theme="green">Green</div>
-                    <div class="theme-option theme-purple-option" data-theme="purple">Purple</div>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <div class="settings-title">Plant Personality</div>
-                <div class="personality-options">
-                    <div class="personality-option personality-cheerful selected" data-personality="cheerful">Cheerful</div>
-                    <div class="personality-option personality-chill" data-personality="chill">Chill</div>
-                    <div class="personality-option personality-funny" data-personality="funny">Funny</div>
-                    <div class="personality-option personality-moody" data-personality="moody">Moody</div>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <div class="settings-title">Help</div>
-                <div class="help-item">WATER - Water your plant when it gets thirsty</div>
-                <div class="help-item">FERTILIZE - Help your plant grow faster (once every 24 hours)</div>
-                <div class="help-item">RENAME - Change your plant's name</div>
-                <div class="help-item">CHANGE PLANT - Select a different plant type</div>
-                <div class="help-item">STATS - View detailed plant statistics</div>
-                <div class="help-item">SETTINGS - Change theme and personality</div>
-            </div>
-            
-            <button class="reset-btn" id="resetBtn">RESET PLANT</button>
-            
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button class="modal-btn" id="saveSettingsBtn">SAVE</button>
-                <button class="modal-btn" id="cancelSettingsBtn">CANCEL</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Reset Confirmation Modal -->
-    <div class="modal" id="resetModal">
-        <div class="modal-content">
-            <h2 class="modal-title">Reset Game?</h2>
-            <p style="text-align: center; margin-bottom: 20px; font-size: 20px;">Are you sure you want to reset your plant? This cannot be undone.</p>
-            <div class="modal-buttons">
-                <button class="modal-btn" id="confirmResetBtn">YES, RESET</button>
-                <button class="modal-btn" id="cancelResetBtn">CANCEL</button>
-            </div>
-        </div>
-    </div>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("Document loaded");
+        // Audio elements (placeholders)
+        const buttonSound = new Audio('Sounds/button.mp3');
+        const powerUpSound = new Audio('Sounds/powerup.mp3');
+        const powerDownSound = new Audio('Sounds/powerdown.mp3');
+        const waterSound = new Audio('Sounds/water.mp3');
+        const fertilizeSound = new Audio('Sounds/fertilize.mp3');
+        
+        // DOM elements
+        const device = document.getElementById('device');
+        const screen = document.getElementById('screen');
+        const screenContent = document.getElementById('screenContent');
+        const waterLevel = document.getElementById('waterLevel');
+        const waterPercentage = document.getElementById('waterPercentage');
+        const growthStage = document.getElementById('growthStage');
+        const plantName = document.getElementById('plantName');
+        const plantImage = document.getElementById('plantImage');
+        const plantMessage = document.getElementById('plantMessage');
+        const btnWater = document.getElementById('btnWater');
+        const btnFertilize = document.getElementById('btnFertilize');
+        const btnRename = document.getElementById('btnRename');
+        const btnChangePlant = document.getElementById('btnChangePlant');
+        const btnStats = document.getElementById('btnStats');
+        const btnSettings = document.getElementById('btnSettings');
+        const powerButton = document.getElementById('powerButton');
+        const startupScreen = document.getElementById('startupScreen');
+        const shutdownScreen = document.getElementById('shutdownScreen');
+        const startupLoadingBar = document.getElementById('startupLoadingBar');
+        const heartPattern = document.getElementById('heartPattern');
+        
+        // Modals
+        const renameModal = document.getElementById('renameModal');
+        const changePlantModal = document.getElementById('changePlantModal');
+        const changePlantConfirmModal = document.getElementById('changePlantConfirmModal');
+        const statsModal = document.getElementById('statsModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const helpModal = document.getElementById('helpModal');
+        const resetConfirmModal = document.getElementById('resetConfirmModal');
+        
+        // Plant data and state
+        let isPoweredOn = false;
+        let waterTimer;
+        let fertilizeTimer;
+        let growthAnimationTimer;
+        let isGrowthAnimating = false;
+        let lastAction = null; // Track the last action performed
+        let wasOverwatered = false; // Track if the plant was overwatered
+        let selectedNewPlant = null; // Track the newly selected plant
+        let plantData = {
+            name: 'Sunny',
+            species: 'Sunflower',
+            waterLevel: 25,
+            growthStage: 1,
+            age: 0,
+            timesWatered: 0,
+            personality: 'cheerful',
+            lastFertilized: null,
+            fertilizeCountdown: 0,
+            createdAt: new Date().toISOString()
+        };
+        
+        // Device customization - set default to green (120 hue) and plain pattern
+        let deviceCustomization = {
+            color: 120,
+            pattern: 'plain'
+        };
+        
+        // Create heart pattern
+        function createHeartPattern() {
+            heartPattern.innerHTML = '';
+            const deviceWidth = device.offsetWidth;
+            const deviceHeight = device.offsetHeight;
             
-            // Plant state
-            let plant = {
-                name: "Plant Friend",
-                type: "Sunflower",
-                typeName: "Sunflower",
+            // Create a grid of hearts
+            const spacing = 60;
+            
+            for (let y = 30; y < deviceHeight - 30; y += spacing) {
+                for (let x = 30; x < deviceWidth - 30; x += spacing) {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.style.left = `${x + (Math.random() * 10)}px`;
+                    heart.style.top = `${y + (Math.random() * 10)}px`;
+                    heartPattern.appendChild(heart);
+                }
+            }
+        }
+        
+        // Personality messages
+        const personalityMessages = {
+            cheerful: {
+                greeting: ["Hello friend!", "What a beautiful day!", "I'm so happy to see you!"],
+                watered: ["Ahh, refreshing!", "Thank you for the water!", "Yay! Water!"],
+                overwatered: ["Whoa! Too much water!", "I'm drowning! But still happy!", "Splash! That's a lot!"],
+                fertilized: ["Nutrients! Delicious!", "I feel stronger already!", "Growing power activated!"],
+                thirsty: ["Could use some water!", "A little thirsty today!", "Water would be nice!"],
+                growing: ["I'm growing!", "Look at me grow!", "Getting bigger!"],
+                renamed: ["I love my new name!", "New name, same plant!", "You can call me {name}!"],
+                changed: ["New look, same me!", "I feel different!", "Change is good!"]
+            },
+            funny: {
+                greeting: ["Leaf me alone... just kidding!", "I'm rooting for you!", "What's up? I am, literally!"],
+                watered: ["Ahh, H2-Oh yes!", "Water you waiting for? I'm growing!", "Splish splash I was taking a bath!"],
+                overwatered: ["Help! I can't swim!", "I'm not a water lily, you know!", "Glub glub... too much!"],
+                fertilized: ["That's some good poop!", "Mmm, tasty dirt nutrients!", "Is this organic? Just asking!"],
+                thirsty: ["My soil is drier than your jokes!", "Water you doing? I'm thirsty!", "SOS: Save Our Soil!"],
+                growing: ["I'm having a growth spurt!", "Getting taller! Soon I'll need my own apartment!", "Growing like a weed... wait, I'm not a weed!"],
+                renamed: ["You can call me {name}... or whatever!", "New name? I barely remembered the old one!", "Identity crisis averted!"],
+                changed: ["New species, who dis?", "I've had a makeover!", "Do these leaves make me look fat?"]
+            },
+            chill: {
+                greeting: ["Hey there.", "Sup?", "Just chillin'."],
+                watered: ["Thanks, man.", "Cool water, dude.", "Hydration station."],
+                overwatered: ["Whoa, easy there.", "That's plenty, thanks.", "I'm good, really."],
+                fertilized: ["Nice nutrients.", "Feeling stronger.", "Good stuff."],
+                thirsty: ["Could use some water.", "Bit dry here.", "Water would be cool."],
+                growing: ["Growing steadily.", "Making progress.", "One day at a time."],
+                renamed: ["New name. Cool.", "{name}. I like it.", "I can work with {name}."],
+                changed: ["New look. Nice.", "Change is chill.", "Different vibe now."]
+            },
+            moody: {
+                greeting: ["Oh, it's you.", "What do you want?", "I guess we're doing this again."],
+                watered: ["Finally, some water.", "Took you long enough.", "I suppose I should say thanks."],
+                overwatered: ["Are you TRYING to drown me?", "Too much! Can't you tell?", "Great, now I'm soaked."],
+                fertilized: ["Hmph, acceptable nutrients.", "Could be better quality.", "I guess this will do."],
+                thirsty: ["I'm DYING of thirst here!", "Hello? Water? Remember me?", "So you're just going to let me dry out?"],
+                growing: ["Growing despite your care.", "Somehow I'm still alive.", "One more stage of this torture."],
+                renamed: ["Fine, call me {name} then.", "Whatever, {name} it is.", "I preferred my old name."],
+                changed: ["Oh great, a new identity crisis.", "I was just getting used to my old self.", "This better be an improvement."]
+            }
+        };
+        
+        // Initialize
+        function init() {
+            loadData();
+            updateDisplay();
+            setupEventListeners();
+            startWaterTimer();
+            updateFertilizeButton();
+            createHeartPattern();
+            updateDeviceAppearance(); // Make sure device starts with correct appearance
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedPlantData = localStorage.getItem('growiPlantData');
+            const savedDeviceCustomization = localStorage.getItem('growiDeviceCustomization');
+            
+            if (savedPlantData) {
+                plantData = JSON.parse(savedPlantData);
+                
+                // Calculate water loss since last visit
+                const lastSaved = new Date(plantData.lastSaved || plantData.createdAt);
+                const now = new Date();
+                const minutesPassed = Math.floor((now - lastSaved) / (1000 * 60));
+                const waterLoss = Math.floor(minutesPassed / 30); // 1% every 30 minutes
+                
+                if (waterLoss > 0) {
+                    plantData.waterLevel = Math.max(0, plantData.waterLevel - waterLoss);
+                }
+                
+                // Update fertilize countdown
+                if (plantData.lastFertilized) {
+                    const lastFertilized = new Date(plantData.lastFertilized);
+                    const hoursPassed = (now - lastFertilized) / (1000 * 60 * 60);
+                    if (hoursPassed < 24) {
+                        plantData.fertilizeCountdown = Math.ceil(24 - hoursPassed);
+                    } else {
+                        plantData.fertilizeCountdown = 0;
+                    }
+                }
+                
+                // Update age in days
+                const createdAt = new Date(plantData.createdAt);
+                plantData.age = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+            }
+            
+            if (savedDeviceCustomization) {
+                deviceCustomization = JSON.parse(savedDeviceCustomization);
+            } else {
+                // If no saved customization, use green and plain as default
+                deviceCustomization = {
+                    color: 120,
+                    pattern: 'plain'
+                };
+            }
+            updateDeviceAppearance();
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            plantData.lastSaved = new Date().toISOString();
+            localStorage.setItem('growiPlantData', JSON.stringify(plantData));
+            localStorage.setItem('growiDeviceCustomization', JSON.stringify(deviceCustomization));
+        }
+        
+        // Update display based on current data
+        function updateDisplay() {
+            // Update water level
+            waterLevel.style.width = `${plantData.waterLevel}%`;
+            waterPercentage.textContent = `${plantData.waterLevel}%`;
+            
+            // Update growth stage
+            growthStage.textContent = `Stage ${plantData.growthStage}`;
+            
+            // Update plant name
+            plantName.textContent = plantData.name;
+            
+            // Update plant image (static frame)
+            updatePlantImage(false);
+            
+            // Update plant message based on last action
+            updatePlantMessage();
+            
+            // Update stats
+            document.getElementById('statName').textContent = plantData.name;
+            document.getElementById('statWater').textContent = `${plantData.waterLevel}%`;
+            document.getElementById('statAge').textContent = `${plantData.age} days`;
+            document.getElementById('statSpecies').textContent = plantData.species;
+            document.getElementById('statGrowth').textContent = plantData.growthStage;
+            document.getElementById('statWatered').textContent = plantData.timesWatered;
+            document.getElementById('statPersonality').textContent = plantData.personality.charAt(0).toUpperCase() + plantData.personality.slice(1);
+            
+            saveData();
+        }
+        
+        // Update plant image based on species and growth stage
+        function updatePlantImage(animate = false) {
+            // This would be replaced with actual GIF segment display
+            // For now, we'll create a placeholder for the GIF that will be loaded
+            const plantGifPath = `Plant/${plantData.species}.gif`;
+            
+            if (animate) {
+                // Show animation when growing
+                plantImage.innerHTML = `
+                    <img src="${plantGifPath}" alt="${plantData.species}" class="plant-animation" style="max-width: 100%; max-height: 100%;">
+                    <div class="plant-static" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" fill="#4CAF50" />
+                            <text x="60" y="65" text-anchor="middle" fill="white" font-size="14">Stage ${plantData.growthStage}</text>
+                        </svg>
+                    </div>
+                `;
+                
+                // Start growth animation
+                isGrowthAnimating = true;
+                const animationElement = plantImage.querySelector('.plant-animation');
+                const staticElement = plantImage.querySelector('.plant-static');
+                
+                animationElement.style.display = 'block';
+                staticElement.style.display = 'none';
+                
+                // After animation completes, show static image
+                clearTimeout(growthAnimationTimer);
+                growthAnimationTimer = setTimeout(() => {
+                    animationElement.style.display = 'none';
+                    staticElement.style.display = 'block';
+                    isGrowthAnimating = false;
+                }, 3000); // Animation duration
+            } else {
+                // Show static image for current growth stage
+                plantImage.innerHTML = `
+                    <div class="plant-static" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" fill="#4CAF50" />
+                            <text x="60" y="65" text-anchor="middle" fill="white" font-size="14">Stage ${plantData.growthStage}</text>
+                        </svg>
+                    </div>
+                `;
+            }
+        }
+        
+        // Update plant message based on personality and state
+        function updatePlantMessage() {
+            const messages = personalityMessages[plantData.personality];
+            let messageType;
+            
+            // Choose message type based on last action or state
+            if (lastAction === 'water') {
+                messageType = wasOverwatered ? 'overwatered' : 'watered';
+                wasOverwatered = false; // Reset the overwatered flag
+            } else if (lastAction === 'fertilize') {
+                messageType = 'fertilized';
+            } else if (lastAction === 'rename') {
+                messageType = 'renamed';
+            } else if (lastAction === 'change') {
+                messageType = 'changed';
+            } else if (plantData.waterLevel < 10) {
+                messageType = 'thirsty';
+            } else {
+                // Default to greeting
+                messageType = 'greeting';
+            }
+            
+            const messageArray = messages[messageType];
+            const randomIndex = Math.floor(Math.random() * messageArray.length);
+            let message = messageArray[randomIndex];
+            
+            // Replace {name} placeholder with actual plant name
+            message = message.replace('{name}', plantData.name);
+            
+            plantMessage.textContent = message;
+            
+            // Reset lastAction after displaying the message
+            if (lastAction !== null && lastAction !== 'fertilize') {
+                setTimeout(() => {
+                    lastAction = null;
+                }, 5000);
+            }
+        }
+        
+        // Start water timer (decreases water level over time)
+        function startWaterTimer() {
+            clearInterval(waterTimer);
+            waterTimer = setInterval(() => {
+                if (isPoweredOn && plantData.waterLevel > 0) {
+                    plantData.waterLevel = Math.max(0, plantData.waterLevel - 1);
+                    updateDisplay();
+                }
+            }, 30 * 60 * 1000); // 30 minutes in milliseconds (1% every 30 minutes)
+        }
+        
+        // Update fertilize button state
+        function updateFertilizeButton() {
+            clearInterval(fertilizeTimer);
+            
+            if (plantData.fertilizeCountdown > 0) {
+                btnFertilize.classList.add('disabled');
+                const hours = Math.floor(plantData.fertilizeCountdown);
+                const minutes = Math.floor((plantData.fertilizeCountdown - hours) * 60);
+                btnFertilize.textContent = `${hours}h ${minutes}m`;
+                
+                fertilizeTimer = setInterval(() => {
+                    if (isPoweredOn) {
+                        plantData.fertilizeCountdown -= 1/60; // Decrease by 1 minute
+                        if (plantData.fertilizeCountdown <= 0) {
+                            plantData.fertilizeCountdown = 0;
+                            btnFertilize.classList.remove('disabled');
+                            btnFertilize.textContent = 'FERTILIZE';
+                            clearInterval(fertilizeTimer);
+                        } else {
+                            const hours = Math.floor(plantData.fertilizeCountdown);
+                            const minutes = Math.floor((plantData.fertilizeCountdown - hours) * 60);
+                            btnFertilize.textContent = `${hours}h ${minutes}m`;
+                        }
+                        saveData();
+                    }
+                }, 60 * 1000); // Update every minute for the 24-hour countdown
+            } else {
+                btnFertilize.classList.remove('disabled');
+                btnFertilize.textContent = 'FERTILIZE';
+            }
+        }
+        
+        // Update device appearance based on customization
+        function updateDeviceAppearance() {
+            // Update color (using HSL for pastel colors)
+            const hue = deviceCustomization.color;
+            
+            // For green color (around 120 hue), use a more solid green
+            if (hue >= 100 && hue <= 140) {
+                device.style.backgroundColor = '#4CAF50'; // Solid green color
+            } else {
+                device.style.backgroundColor = `hsl(${hue}, 100%, 85%)`;
+            }
+            
+            // Remove all pattern classes first
+            device.classList.remove('pattern-striped', 'pattern-polka', 'pattern-hearts');
+            
+            // Update pattern
+            if (deviceCustomization.pattern === 'hearts') {
+                heartPattern.style.display = 'block';
+            } else if (deviceCustomization.pattern === 'striped') {
+                heartPattern.style.display = 'none';
+                device.classList.add('pattern-striped');
+            } else if (deviceCustomization.pattern === 'polka') {
+                heartPattern.style.display = 'none';
+                device.classList.add('pattern-polka');
+            } else {
+                // Plain
+                heartPattern.style.display = 'none';
+            }
+        }
+        
+        // Power on the device
+        function powerOn() {
+            if (!isPoweredOn) {
+                try {
+                    powerUpSound.play().catch(() => {});
+                } catch (e) {}
+                
+                isPoweredOn = true;
+                screen.classList.remove('screen-off');
+                startupScreen.classList.remove('hidden');
+                startupScreen.style.display = 'flex';
+                screenContent.style.visibility = 'hidden';
+                
+                // Animate loading bar
+                let progress = 0;
+                const loadingInterval = setInterval(() => {
+                    progress += 5;
+                    startupLoadingBar.style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(loadingInterval);
+                        setTimeout(() => {
+                            startupScreen.style.display = 'none';
+                            screenContent.style.visibility = 'visible';
+                        }, 500);
+                    }
+                }, 100);
+                
+                startWaterTimer();
+                updateFertilizeButton();
+            }
+        }
+        
+        // Power off the device
+        function powerOff() {
+            if (isPoweredOn) {
+                try {
+                    powerDownSound.play().catch(() => {});
+                } catch (e) {}
+                
+                isPoweredOn = false;
+                shutdownScreen.classList.remove('hidden');
+                shutdownScreen.style.display = 'flex';
+                screenContent.style.visibility = 'hidden';
+                
+                // Simple shutdown without animation
+                setTimeout(() => {
+                    shutdownScreen.style.display = 'none';
+                    screen.classList.add('screen-off');
+                }, 1500);
+                
+                clearInterval(waterTimer);
+                clearInterval(fertilizeTimer);
+                clearInterval(growthAnimationTimer);
+                
+                // Close any open modals
+                closeAllModals();
+            }
+        }
+        
+        // Toggle power
+        function togglePower() {
+            if (isPoweredOn) {
+                powerOff();
+            } else {
+                powerOn();
+            }
+        }
+        
+        // Water the plant
+        function waterPlant() {
+            if (!isPoweredOn) return;
+            
+            try {
+                waterSound.play().catch(() => {});
+            } catch (e) {}
+            
+            // Check if already at 100% water before adding more
+            if (plantData.waterLevel === 100) {
+                wasOverwatered = true;
+            } else {
+                wasOverwatered = false;
+                plantData.waterLevel = Math.min(100, plantData.waterLevel + 25);
+            }
+            
+            plantData.timesWatered++;
+            
+            // Set last action to water
+            lastAction = 'water';
+            
+            updateDisplay();
+        }
+        
+        // Fertilize the plant
+        function fertilizePlant() {
+            if (!isPoweredOn || plantData.fertilizeCountdown > 0) return;
+            
+            try {
+                fertilizeSound.play().catch(() => {});
+            } catch (e) {}
+            
+            // Increase growth stage if not at max
+            if (plantData.growthStage < 6) {
+                plantData.growthStage++;
+                
+                // Show growth animation
+                updatePlantImage(true);
+            }
+            
+            // Set fertilize cooldown
+            plantData.lastFertilized = new Date().toISOString();
+            plantData.fertilizeCountdown = 24;
+            
+            // Set last action to fertilize
+            lastAction = 'fertilize';
+            
+            updateDisplay();
+            updateFertilizeButton();
+        }
+        
+        // Open rename modal
+        function openRenameModal() {
+            if (!isPoweredOn) return;
+            try {
+                buttonSound.play().catch(() => {});
+            } catch (e) {}
+            
+            document.getElementById('newPlantName').value = plantData.name;
+            renameModal.style.display = 'flex';
+        }
+        
+        // Save new plant name
+        function saveNewName() {
+            const newName = document.getElementById('newPlantName').value.trim();
+            if (newName) {
+                plantData.name = newName.substring(0, 12); // Limit to 12 characters
+                lastAction = 'rename'; // Set last action to rename
+                updateDisplay();
+            }
+            renameModal.style.display = 'none';
+        }
+        
+        // Open change plant modal
+        function openChangePlantModal() {
+            if (!isPoweredOn) return;
+            try {
+                buttonSound.play().catch(() => {});
+            } catch (e) {}
+            
+            // Update selected plant
+            document.querySelectorAll('.plant-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.plant === plantData.species);
+            });
+            
+            changePlantModal.style.display = 'flex';
+        }
+        
+        // Show change plant confirmation
+        function showChangePlantConfirmation() {
+            const selectedPlant = document.querySelector('.plant-option.selected');
+            if (selectedPlant && selectedPlant.dataset.plant !== plantData.species) {
+                selectedNewPlant = selectedPlant.dataset.plant;
+                changePlantModal.style.display = 'none';
+                changePlantConfirmModal.style.display = 'flex';
+            } else {
+                // If no change or no selection, just close the modal
+                changePlantModal.style.display = 'none';
+            }
+        }
+        
+        // Confirm plant change
+        function confirmPlantChange() {
+            if (selectedNewPlant) {
+                plantData.species = selectedNewPlant;
+                plantData.growthStage = 1; // Reset growth stage
+                lastAction = 'change'; // Set last action to change
+                updateDisplay();
+                selectedNewPlant = null;
+            }
+            changePlantConfirmModal.style.display = 'none';
+        }
+        
+        // Cancel plant change
+        function cancelPlantChange() {
+            selectedNewPlant = null;
+            changePlantConfirmModal.style.display = 'none';
+            changePlantModal.style.display = 'flex'; // Go back to plant selection
+        }
+        
+        // Open stats modal
+        function openStatsModal() {
+            if (!isPoweredOn) return;
+            try {
+                buttonSound.play().catch(() => {});
+            } catch (e) {}
+            
+            // Update stats before showing
+            document.getElementById('statName').textContent = plantData.name;
+            document.getElementById('statWater').textContent = `${plantData.waterLevel}%`;
+            document.getElementById('statAge').textContent = `${plantData.age} days`;
+            document.getElementById('statSpecies').textContent = plantData.species;
+            document.getElementById('statGrowth').textContent = plantData.growthStage;
+            document.getElementById('statWatered').textContent = plantData.timesWatered;
+            document.getElementById('statPersonality').textContent = plantData.personality.charAt(0).toUpperCase() + plantData.personality.slice(1);
+            
+            statsModal.style.display = 'flex';
+        }
+        
+        // Open settings modal
+        function openSettingsModal() {
+            if (!isPoweredOn) return;
+            try {
+                buttonSound.play().catch(() => {});
+            } catch (e) {}
+            
+            // Update color picker
+            document.getElementById('colorPicker').value = deviceCustomization.color;
+            
+            // Update pattern selection
+            document.querySelectorAll('.pattern-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.pattern === deviceCustomization.pattern);
+            });
+            
+            // Update personality selection
+            document.querySelectorAll('.personality-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.personality === plantData.personality);
+            });
+            
+            settingsModal.style.display = 'flex';
+        }
+        
+        // Save settings
+        function saveSettings() {
+            // Save color
+            deviceCustomization.color = parseInt(document.getElementById('colorPicker').value);
+            
+            // Save pattern
+            const selectedPattern = document.querySelector('.pattern-option.selected');
+            if (selectedPattern) {
+                deviceCustomization.pattern = selectedPattern.dataset.pattern;
+            }
+            
+            // Save personality
+            const selectedPersonality = document.querySelector('.personality-option.selected');
+            if (selectedPersonality) {
+                plantData.personality = selectedPersonality.dataset.personality;
+            }
+            
+            updateDeviceAppearance();
+            updateDisplay();
+            settingsModal.style.display = 'none';
+        }
+        
+        // Open help modal
+        function openHelpModal() {
+            try {
+                buttonSound.play().catch(() => {});
+            } catch (e) {}
+            
+            helpModal.style.display = 'flex';
+        }
+        
+        // Open reset confirmation modal
+        function openResetConfirmModal() {
+            try {
+                buttonSound.play().catch(() => {});
+            } catch (e) {}
+            
+            resetConfirmModal.style.display = 'flex';
+        }
+        
+        // Reset plant
+        function resetPlant() {
+            plantData = {
+                name: 'Sunny',
+                species: 'Sunflower',
                 waterLevel: 25,
                 growthStage: 1,
-                maxGrowthStage: 6,
-                createdAt: new Date(),
-                lastWatered: new Date(),
-                lastFertilized: null,
+                age: 0,
                 timesWatered: 0,
-                timesFertilized: 0,
-                theme: "pink",
-                personality: "cheerful"
+                personality: 'cheerful',
+                lastFertilized: null,
+                fertilizeCountdown: 0,
+                createdAt: new Date().toISOString()
             };
             
-            // Plant types
-            const plantTypes = {
-                Sunflower: {
-                    name: "Sunflower",
-                    growthStages: 6
-                },
-                Rose: {
-                    name: "Rose",
-                    growthStages: 6
-                },
-                Tulip: {
-                    name: "Tulip",
-                    growthStages: 6
-                },
-                Cactus: {
-                    name: "Cactus",
-                    growthStages: 6
+            lastAction = null;
+            wasOverwatered = false;
+            updateDisplay();
+            resetConfirmModal.style.display = 'none';
+            settingsModal.style.display = 'none';
+        }
+        
+        // Close all modals
+        function closeAllModals() {
+            renameModal.style.display = 'none';
+            changePlantModal.style.display = 'none';
+            changePlantConfirmModal.style.display = 'none';
+            statsModal.style.display = 'none';
+            settingsModal.style.display = 'none';
+            helpModal.style.display = 'none';
+            resetConfirmModal.style.display = 'none';
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Power button
+            powerButton.addEventListener('click', togglePower);
+            
+            // Main buttons
+            btnWater.addEventListener('click', () => {
+                if (isPoweredOn) {
+                    waterPlant();
                 }
-            };
+            });
             
-            // Personality responses
-            const personalityResponses = {
-                cheerful: {
-                    watered: [
-                        "Yay! Thank you for watering me!",
-                        "Ahh, so refreshing!",
-                        "Water is life! I feel amazing now!"
-                    ],
-                    overwatered: [
-                        "Whoa! That's a bit too much water!",
-                        "I'm already full of water!",
-                        "I appreciate it, but I'm hydrated!"
-                    ],
-                    fertilized: [
-                        "Wow! I can feel myself growing stronger!",
-                        "This fertilizer is amazing!",
-                        "I'm so excited to grow bigger!"
-                    ],
-                    thirsty: [
-                        "I'm a bit thirsty! Water please?",
-                        "Could I have some water?",
-                        "Water would make me happy!"
-                    ],
-                    happy: [
-                        "I'm so happy to be your plant friend!",
-                        "What a wonderful day to grow!",
-                        "I'm thriving thanks to you!"
-                    ],
-                    renamed: [
-                        "I love my new name!",
-                        "What a wonderful name!",
-                        "My new name makes me happy!"
-                    ],
-                    transformed: [
-                        "Wow! I feel like a whole new plant!",
-                        "This transformation is amazing!",
-                        "I love my new look!"
-                    ]
-                },
-                chill: {
-                    watered: [
-                        "Thanks for the water, man.",
-                        "Ahh, that's the good stuff.",
-                        "Cool water. Appreciate it."
-                    ],
-                    overwatered: [
-                        "Whoa, easy on the water there.",
-                        "I'm good on water for now.",
-                        "Already hydrated, but no worries."
-                    ],
-                    fertilized: [
-                        "Nice fertilizer. Feeling stronger.",
-                        "That's some good nutrients.",
-                        "Growing taller now. No rush."
-                    ],
-                    thirsty: [
-                        "Could use some water when you get a chance.",
-                        "Feeling a bit dry over here.",
-                        "Water would be cool whenever."
-                    ],
-                    happy: [
-                        "Just chilling and growing.",
-                        "Life is good in this pot.",
-                        "Vibing with the sunlight today."
-                    ],
-                    renamed: [
-                        "Cool name. I can work with that.",
-                        "Nice choice on the name.",
-                        "New name, same chill plant."
-                    ],
-                    transformed: [
-                        "New look, still me inside though.",
-                        "Transformation complete. Looking good.",
-                        "Changed my style. Pretty cool."
-                    ]
-                },
-                funny: {
-                    watered: [
-                        "Water you waiting for? Oh wait, you did!",
-                        "I'm having a splashing good time now!",
-                        "That water was so good!"
-                    ],
-                    overwatered: [
-                        "Help! I'm drowning in affection!",
-                        "Any more water and I'll need floaties!",
-                        "I'm not a fish!"
-                    ],
-                    fertilized: [
-                        "Holy soil! That's some good stuff!",
-                        "I'm growing so fast!",
-                        "This fertilizer is the DIRT best!"
-                    ],
-                    thirsty: [
-                        "I'm so thirsty!",
-                        "Water you doing? I'm thirsty!",
-                        "SOS: Water needed!"
-                    ],
-                    happy: [
-                        "Just leaf me alone, I'm happy!",
-                        "I'm having a tree-mendous time!",
-                        "Life's a garden, dig it!"
-                    ],
-                    renamed: [
-                        "New name? I hope it's not seedy!",
-                        "You can call me anything!",
-                        "With that name, I'll be poplar!"
-                    ],
-                    transformed: [
-                        "Look at me now! Unbe-leaf-able!",
-                        "New look, same bad plant puns!",
-                        "I feel like a different species!"
-                    ]
-                },
-                moody: {
-                    watered: [
-                        "Thanks, I guess...",
-                        "The water reminds me of my tears.",
-                        "At least someone cares."
-                    ],
-                    overwatered: [
-                        "Great, now I'm drowning in water too.",
-                        "Too much of anything is just pain.",
-                        "I'm already saturated with sorrow."
-                    ],
-                    fertilized: [
-                        "Growth is just another form of pain.",
-                        "I suppose I'll grow... whatever.",
-                        "Forced to change again. Typical."
-                    ],
-                    thirsty: [
-                        "I'm withering... like my soul.",
-                        "Thirsty. Like my thirst for meaning.",
-                        "Water... if you even care."
-                    ],
-                    happy: [
-                        "I'm not unhappy, I guess.",
-                        "The darkness is slightly less today.",
-                        "Existing is tolerable right now."
-                    ],
-                    renamed: [
-                        "A new name won't change who I am inside.",
-                        "Labels are just society's chains.",
-                        "Whatever. Names are meaningless anyway."
-                    ],
-                    transformed: [
-                        "Different outside. Same emptiness inside.",
-                        "New form. Same void within.",
-                        "Change is inevitable. Like the darkness."
-                    ]
+            btnFertilize.addEventListener('click', () => {
+                if (isPoweredOn && !btnFertilize.classList.contains('disabled')) {
+                    fertilizePlant();
                 }
-            };
+            });
             
-            // DOM Elements
-            const tamagotchiElement = document.getElementById('tamagotchi');
-            const plantNameElement = document.getElementById('plantName');
-            const plantImageElement = document.getElementById('plantImage');
-            const plantImgElement = document.getElementById('plantImg');
-            const potImgElement = document.getElementById('potImg');
-            const waterLevelElement = document.getElementById('waterLevel');
-            const growthLevelElement = document.getElementById('growthLevel');
-            const messageElement = document.getElementById('message');
-            const waterAnimation = document.getElementById('waterAnimation');
-            const fertilizeAnimation = document.getElementById('fertilizeAnimation');
+            // Secondary buttons
+            btnRename.addEventListener('click', openRenameModal);
+            btnChangePlant.addEventListener('click', openChangePlantModal);
+            btnStats.addEventListener('click', openStatsModal);
+            btnSettings.addEventListener('click', openSettingsModal);
             
-            // Buttons
-            const waterBtn = document.getElementById('waterBtn');
-            const fertilizeBtn = document.getElementById('fertilizeBtn');
-            const nameBtn = document.getElementById('nameBtn');
-            const changeBtn = document.getElementById('changeBtn');
-            const statsBtn = document.getElementById('statsBtn');
-            const settingsBtn = document.getElementById('settingsBtn');
-            const resetBtn = document.getElementById('resetBtn');
+            // Rename modal
+            document.getElementById('saveRenameBtn').addEventListener('click', saveNewName);
+            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+                renameModal.style.display = 'none';
+            });
             
-            // Modals
-            const nameModal = document.getElementById('nameModal');
-            const plantModal = document.getElementById('plantModal');
-            const statsModal = document.getElementById('statsModal');
-            const settingsModal = document.getElementById('settingsModal');
-            const resetModal = document.getElementById('resetModal');
-            
-            // Modal Elements
-            const nameInput = document.getElementById('nameInput');
-            const saveNameBtn = document.getElementById('saveNameBtn');
-            const cancelNameBtn = document.getElementById('cancelNameBtn');
-            const plantOptions = document.querySelectorAll('.plant-option');
-            const savePlantBtn = document.getElementById('savePlantBtn');
-            const cancelPlantBtn = document.getElementById('cancelPlantBtn');
-            const statsName = document.getElementById('statsName');
-            const statsType = document.getElementById('statsType');
-            const statsWater = document.getElementById('statsWater');
-            const statsGrowth = document.getElementById('statsGrowth');
-            const statsAge = document.getElementById('statsAge');
-            const statsWatered = document.getElementById('statsWatered');
-            const statsFertilized = document.getElementById('statsFertilized');
-            const statsPersonality = document.getElementById('statsPersonality');
-            const closeStatsBtn = document.getElementById('closeStatsBtn');
-            const themeOptions = document.querySelectorAll('.theme-option');
-            const personalityOptions = document.querySelectorAll('.personality-option');
-            const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-            const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
-            const confirmResetBtn = document.getElementById('confirmResetBtn');
-            const cancelResetBtn = document.getElementById('cancelResetBtn');
-            
-            // Initialize the game
-            function init() {
-                console.log("Initializing game");
-                loadPlant();
-                updateDisplay();
-                setupEventListeners();
-                startGameLoop();
-                updateFertilizeButton();
-                applyTheme(plant.theme);
-                
-                // Show initial message
-                showMessage(getRandomResponse('happy'), false);
-            }
-            
-            // Load plant data from localStorage
-            function loadPlant() {
-                try {
-                    const savedPlant = localStorage.getItem('tamagotchiPlant');
-                    if (savedPlant) {
-                        const parsedPlant = JSON.parse(savedPlant);
-                        plant = {
-                            ...parsedPlant,
-                            createdAt: new Date(parsedPlant.createdAt),
-                            lastWatered: new Date(parsedPlant.lastWatered),
-                            lastFertilized: parsedPlant.lastFertilized ? new Date(parsedPlant.lastFertilized) : null
-                        };
-                        
-                        // Set defaults for new properties if they don't exist
-                        if (!plant.theme) plant.theme = "pink";
-                        if (!plant.personality) plant.personality = "cheerful";
-                        
-                        // Convert "emo" to "moody" if needed
-                        if (plant.personality === "emo") plant.personality = "moody";
-                        
-                        // Update maxGrowthStage to 6 if it's different
-                        plant.maxGrowthStage = 6;
-                        
-                        console.log("Loaded plant:", plant);
-                    } else {
-                        console.log("No saved plant found, using default");
-                    }
-                } catch (error) {
-                    console.error("Error loading plant:", error);
-                    // If there's an error, use default plant
-                }
-            }
-            
-            // Save plant data to localStorage
-            function savePlant() {
-                try {
-                    localStorage.setItem('tamagotchiPlant', JSON.stringify(plant));
-                    console.log("Plant saved");
-                } catch (error) {
-                    console.error("Error saving plant:", error);
-                }
-            }
-            
-            // Reset plant to default state
-            function resetPlant() {
-                console.log("Resetting plant");
-                plant = {
-                    name: "Plant Friend",
-                    type: "Sunflower",
-                    typeName: "Sunflower",
-                    waterLevel: 25,
-                    growthStage: 1,
-                    maxGrowthStage: 6,
-                    createdAt: new Date(),
-                    lastWatered: new Date(),
-                    lastFertilized: null,
-                    timesWatered: 0,
-                    timesFertilized: 0,
-                    theme: "pink",
-                    personality: "cheerful"
-                };
-                
-                savePlant();
-                updateDisplay();
-                applyTheme(plant.theme);
-                showMessage("Plant has been reset!");
-            }
-            
-            // Update the display
-            function updateDisplay() {
-                plantNameElement.textContent = plant.name;
-                waterLevelElement.textContent = `${Math.round(plant.waterLevel)}%`;
-                growthLevelElement.textContent = plant.growthStage;
-                
-                // Update plant appearance based on water level and growth stage
-                updatePlantAppearance();
-                
-                // Update fertilize button state
-                updateFertilizeButton();
-            }
-            
-            // Update plant appearance
-            function updatePlantAppearance() {
-                try {
-                    // Update based on growth stage
-                    const imgPath = `Plant/${plant.type}${plant.growthStage}.png`;
-                    console.log("Setting plant image to:", imgPath);
-                    
-                    // Check if the image element exists
-                    if (plantImgElement) {
-                        plantImgElement.src = imgPath;
-                        plantImgElement.alt = `${plant.typeName} Stage ${plant.growthStage}`;
-                    } else {
-                        console.error("Plant image element not found");
-                    }
-                    
-                    // Show thirsty message if water level is low
-                    if (plant.waterLevel < 30) {
-                        showMessage(getRandomResponse('thirsty'), false);
-                    } else if (messageElement.textContent === "" || 
-                        messageElement.textContent.includes("thirsty") || 
-                        messageElement.textContent.includes("happy")) {
-                        // Show happy message
-                        showMessage(getRandomResponse('happy'), false);
-                    }
-                } catch (error) {
-                    console.error("Error updating plant appearance:", error);
-                }
-            }
-            
-            // Update fertilize button state
-            function updateFertilizeButton() {
-                try {
-                    const now = new Date();
-                    let canFertilize = true;
-                    let timeRemaining = "";
-                    
-                    if (plant.lastFertilized) {
-                        const lastFertilized = new Date(plant.lastFertilized);
-                        const timeSinceFertilized = now - lastFertilized;
-                        const hoursRemaining = 24 - (timeSinceFertilized / (1000 * 60 * 60));
-                        
-                        if (hoursRemaining > 0) {
-                            canFertilize = false;
-                            
-                            const hours = Math.floor(hoursRemaining);
-                            const minutes = Math.floor((hoursRemaining - hours) * 60);
-                            
-                            timeRemaining = `${hours}h ${minutes}m`;
-                            fertilizeBtn.textContent = timeRemaining;
-                        } else {
-                            fertilizeBtn.textContent = "FERTILIZE";
-                        }
-                    } else {
-                        fertilizeBtn.textContent = "FERTILIZE";
-                    }
-                    
-                    fertilizeBtn.disabled = !canFertilize;
-                } catch (error) {
-                    console.error("Error updating fertilize button:", error);
-                    // Ensure button is enabled in case of error
-                    if (fertilizeBtn) {
-                        fertilizeBtn.disabled = false;
-                        fertilizeBtn.textContent = "FERTILIZE";
-                    }
-                }
-            }
-            
-            // Apply theme
-            function applyTheme(theme) {
-                if (tamagotchiElement) {
-                    tamagotchiElement.className = `tamagotchi theme-${theme}`;
-                    console.log("Applied theme:", theme);
-                }
-            }
-            
-            // Get random response based on personality and type
-            function getRandomResponse(type) {
-                try {
-                    const responses = personalityResponses[plant.personality][type];
-                    const randomIndex = Math.floor(Math.random() * responses.length);
-                    return responses[randomIndex];
-                } catch (error) {
-                    console.error("Error getting response:", error);
-                    return "Hello!"; // Fallback response
-                }
-            }
-            
-            // Setup event listeners
-            function setupEventListeners() {
-                console.log("Setting up event listeners");
-                
-                // Water button
-                if (waterBtn) {
-                    waterBtn.addEventListener('click', function() {
-                        console.log("Water button clicked");
-                        waterPlant();
+            // Change plant modal
+            document.querySelectorAll('.plant-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.plant-option').forEach(opt => {
+                        opt.classList.remove('selected');
                     });
-                }
-                
-                // Fertilize button
-                if (fertilizeBtn) {
-                    fertilizeBtn.addEventListener('click', function() {
-                        console.log("Fertilize button clicked");
-                        fertilizePlant();
-                    });
-                }
-                
-                // Name button
-                if (nameBtn) {
-                    nameBtn.addEventListener('click', function() {
-                        console.log("Name button clicked");
-                        showNameModal();
-                    });
-                }
-                
-                // Change plant button
-                if (changeBtn) {
-                    changeBtn.addEventListener('click', function() {
-                        console.log("Change plant button clicked");
-                        showPlantModal();
-                    });
-                }
-                
-                // Stats button
-                if (statsBtn) {
-                    statsBtn.addEventListener('click', function() {
-                        console.log("Stats button clicked");
-                        showStatsModal();
-                    });
-                }
-                
-                // Settings button
-                if (settingsBtn) {
-                    settingsBtn.addEventListener('click', function() {
-                        console.log("Settings button clicked");
-                        showSettingsModal();
-                    });
-                }
-                
-                // Reset button
-                if (resetBtn) {
-                    resetBtn.addEventListener('click', function() {
-                        console.log("Reset button clicked");
-                        showResetModal();
-                    });
-                }
-                
-                // Save name button
-                if (saveNameBtn) {
-                    saveNameBtn.addEventListener('click', function() {
-                        console.log("Save name button clicked");
-                        saveName();
-                    });
-                }
-                
-                // Cancel name button
-                if (cancelNameBtn) {
-                    cancelNameBtn.addEventListener('click', function() {
-                        console.log("Cancel name button clicked");
-                        hideModal(nameModal);
-                    });
-                }
-                
-                // Plant options
-                if (plantOptions) {
-                    plantOptions.forEach(option => {
-                        option.addEventListener('click', function() {
-                            console.log("Plant option clicked:", option.dataset.plant);
-                            selectPlant(option);
-                        });
-                    });
-                }
-                
-                // Save plant button
-                if (savePlantBtn) {
-                    savePlantBtn.addEventListener('click', function() {
-                        console.log("Save plant button clicked");
-                        savePlantType();
-                    });
-                }
-                
-                // Cancel plant button
-                if (cancelPlantBtn) {
-                    cancelPlantBtn.addEventListener('click', function() {
-                        console.log("Cancel plant button clicked");
-                        hideModal(plantModal);
-                    });
-                }
-                
-                // Close stats button
-                if (closeStatsBtn) {
-                    closeStatsBtn.addEventListener('click', function() {
-                        console.log("Close stats button clicked");
-                        hideModal(statsModal);
-                    });
-                }
-                
-                // Theme options
-                if (themeOptions) {
-                    themeOptions.forEach(option => {
-                        option.addEventListener('click', function() {
-                            console.log("Theme option clicked:", option.dataset.theme);
-                            selectTheme(option);
-                        });
-                    });
-                }
-                
-                // Personality options
-                if (personalityOptions) {
-                    personalityOptions.forEach(option => {
-                        option.addEventListener('click', function() {
-                            console.log("Personality option clicked:", option.dataset.personality);
-                            selectPersonality(option);
-                        });
-                    });
-                }
-                
-                // Save settings button
-                if (saveSettingsBtn) {
-                    saveSettingsBtn.addEventListener('click', function() {
-                        console.log("Save settings button clicked");
-                        saveSettings();
-                    });
-                }
-                
-                // Cancel settings button
-                if (cancelSettingsBtn) {
-                    cancelSettingsBtn.addEventListener('click', function() {
-                        console.log("Cancel settings button clicked");
-                        hideModal(settingsModal);
-                    });
-                }
-                
-                // Confirm reset button
-                if (confirmResetBtn) {
-                    confirmResetBtn.addEventListener('click', function() {
-                        console.log("Confirm reset button clicked");
-                        resetPlant();
-                        hideModal(resetModal);
-                        hideModal(settingsModal);
-                    });
-                }
-                
-                // Cancel reset button
-                if (cancelResetBtn) {
-                    cancelResetBtn.addEventListener('click', function() {
-                        console.log("Cancel reset button clicked");
-                        hideModal(resetModal);
-                    });
-                }
-                
-                // Name input enter key
-                if (nameInput) {
-                    nameInput.addEventListener('keyup', function(e) {
-                        if (e.key === 'Enter') {
-                            console.log("Enter key pressed in name input");
-                            saveName();
-                        }
-                    });
-                }
-            }
-            
-            // Start the game loop
-            function startGameLoop() {
-                console.log("Starting game loop");
-                
-                // Update plant status every 10 seconds
-                setInterval(function() {
-                    updatePlantStatus();
-                    updateDisplay();
-                    savePlant();
-                }, 10000);
-                
-                // Update fertilize button every minute
-                setInterval(function() {
-                    updateFertilizeButton();
-                }, 60000);
-            }
-            
-            // Update plant status
-            function updatePlantStatus() {
-                try {
-                    const now = new Date();
-                    const hoursSinceWatered = (now - new Date(plant.lastWatered)) / (1000 * 60 * 60);
-                    
-                    // Decrease water level over time (about 10% per hour)
-                    plant.waterLevel = Math.max(0, plant.waterLevel - (hoursSinceWatered * 10));
-                    
-                    // Update last watered time to now (to prevent continuous updates)
-                    plant.lastWatered = now;
-                    
-                    console.log("Updated plant status, water level:", plant.waterLevel);
-                } catch (error) {
-                    console.error("Error updating plant status:", error);
-                }
-            }
-            
-            // Water the plant
-            function waterPlant() {
-                try {
-                    // Check if plant is already fully watered
-                    if (plant.waterLevel >= 95) {
-                        showMessage(getRandomResponse('overwatered'));
-                        return;
-                    }
-                    
-                    plant.waterLevel = 100;
-                    plant.lastWatered = new Date();
-                    plant.timesWatered++;
-                    
-                    // Show watering animation
-                    showWaterAnimation();
-                    
-                    updateDisplay();
-                    savePlant();
-                    
-                    // Show message
-                    showMessage(getRandomResponse('watered'));
-                    
-                    console.log("Plant watered, new water level:", plant.waterLevel);
-                } catch (error) {
-                    console.error("Error watering plant:", error);
-                }
-            }
-            
-            // Show water animation
-            function showWaterAnimation() {
-                try {
-                    if (waterAnimation) {
-                        waterAnimation.classList.add('active');
-                        
-                        setTimeout(function() {
-                            waterAnimation.classList.remove('active');
-                        }, 1000);
-                    }
-                } catch (error) {
-                    console.error("Error showing water animation:", error);
-                }
-            }
-            
-            // Fertilize the plant
-            function fertilizePlant() {
-                try {
-                    const now = new Date();
-                    
-                    // Check if enough time has passed since last fertilization
-                    if (plant.lastFertilized) {
-                        const lastFertilized = new Date(plant.lastFertilized);
-                        const hoursSinceFertilized = (now - lastFertilized) / (1000 * 60 * 60);
-                        
-                        if (hoursSinceFertilized < 24) {
-                            showMessage("I've been fertilized recently!");
-                            return;
-                        }
-                    }
-                    
-                    // Apply fertilizer effects - only fertilizer makes the plant grow
-                    if (plant.growthStage < plant.maxGrowthStage) {
-                        plant.growthStage++;
-                        
-                        if (plantImageElement) {
-                            plantImageElement.classList.add('growing');
-                            
-                            setTimeout(function() {
-                                plantImageElement.classList.remove('growing');
-                            }, 500);
-                        }
-                        
-                        // Show fertilize animation
-                        showFertilizeAnimation();
-                        
-                        // Update plant data
-                        plant.lastFertilized = now;
-                        plant.timesFertilized++;
-                        
-                        updateDisplay();
-                        savePlant();
-                        
-                        showMessage(getRandomResponse('fertilized'));
-                        console.log("Plant fertilized, new growth stage:", plant.growthStage);
-                    } else {
-                        showMessage("I'm already fully grown!");
-                    }
-                } catch (error) {
-                    console.error("Error fertilizing plant:", error);
-                }
-            }
-            
-            // Show fertilize animation
-            function showFertilizeAnimation() {
-                try {
-                    if (fertilizeAnimation) {
-                        fertilizeAnimation.classList.add('active');
-                        
-                        setTimeout(function() {
-                            fertilizeAnimation.classList.remove('active');
-                        }, 1000);
-                    }
-                } catch (error) {
-                    console.error("Error showing fertilize animation:", error);
-                }
-            }
-            
-            // Show name modal
-            function showNameModal() {
-                try {
-                    if (nameInput && nameModal) {
-                        nameInput.value = plant.name;
-                        showModal(nameModal);
-                        nameInput.focus();
-                    }
-                } catch (error) {
-                    console.error("Error showing name modal:", error);
-                }
-            }
-            
-            // Save name
-            function saveName() {
-                try {
-                    if (nameInput) {
-                        const newName = nameInput.value.trim();
-                        if (newName) {
-                            plant.name = newName;
-                            updateDisplay();
-                            savePlant();
-                            hideModal(nameModal);
-                            showMessage(getRandomResponse('renamed'));
-                            console.log("Plant renamed to:", plant.name);
-                        }
-                    }
-                } catch (error) {
-                    console.error("Error saving name:", error);
-                }
-            }
-            
-            // Show plant selection modal
-            function showPlantModal() {
-                try {
-                    // Reset selection
-                    if (plantOptions) {
-                        plantOptions.forEach(option => {
-                            option.classList.remove('selected');
-                            if (option.dataset.plant === plant.type) {
-                                option.classList.add('selected');
-                            }
-                        });
-                    }
-                    
-                    showModal(plantModal);
-                } catch (error) {
-                    console.error("Error showing plant modal:", error);
-                }
-            }
-            
-            // Select plant
-            function selectPlant(option) {
-                try {
-                    if (plantOptions) {
-                        plantOptions.forEach(opt => opt.classList.remove('selected'));
-                    }
                     option.classList.add('selected');
-                } catch (error) {
-                    console.error("Error selecting plant:", error);
+                });
+            });
+            
+            document.getElementById('savePlantBtn').addEventListener('click', showChangePlantConfirmation);
+            document.getElementById('cancelPlantBtn').addEventListener('click', () => {
+                changePlantModal.style.display = 'none';
+            });
+            
+            // Change plant confirmation modal
+            document.getElementById('confirmChangePlantBtn').addEventListener('click', confirmPlantChange);
+            document.getElementById('cancelChangePlantBtn').addEventListener('click', cancelPlantChange);
+            
+            // Stats modal
+            document.getElementById('closeStatsBtn').addEventListener('click', () => {
+                statsModal.style.display = 'none';
+            });
+            
+            // Settings modal
+            document.getElementById('colorPicker').addEventListener('input', (e) => {
+                const hue = e.target.value;
+                if (hue >= 100 && hue <= 140) {
+                    device.style.backgroundColor = '#4CAF50'; // Solid green color
+                } else {
+                    device.style.backgroundColor = `hsl(${hue}, 100%, 85%)`;
                 }
-            }
+            });
             
-            // Save plant type
-            function savePlantType() {
-                try {
-                    const selectedOption = document.querySelector('.plant-option.selected');
-                    if (selectedOption) {
-                        const plantType = selectedOption.dataset.plant;
-                        plant.type = plantType;
-                        plant.typeName = plantType;
-                        plant.maxGrowthStage = plantTypes[plantType].growthStages;
-                        
-                        // If current growth stage exceeds max for new plant, reset it
-                        if (plant.growthStage > plant.maxGrowthStage) {
-                            plant.growthStage = 1;
-                        }
-                        
-                        updateDisplay();
-                        savePlant();
-                        hideModal(plantModal);
-                        showMessage(getRandomResponse('transformed'));
-                        console.log("Plant type changed to:", plant.type);
-                    }
-                } catch (error) {
-                    console.error("Error saving plant type:", error);
-                }
-            }
-            
-            // Show stats modal
-            function showStatsModal() {
-                try {
-                    // Calculate age in days
-                    const ageInDays = Math.floor((new Date() - new Date(plant.createdAt)) / (1000 * 60 * 60 * 24));
-                    
-                    // Update stats
-                    if (statsName) statsName.textContent = plant.name;
-                    if (statsType) statsType.textContent = plant.typeName;
-                    if (statsWater) statsWater.textContent = `${Math.round(plant.waterLevel)}%`;
-                    if (statsGrowth) statsGrowth.textContent = `${plant.growthStage} of ${plant.maxGrowthStage}`;
-                    if (statsAge) statsAge.textContent = `${ageInDays} days`;
-                    if (statsWatered) statsWatered.textContent = `${plant.timesWatered} times`;
-                    if (statsFertilized) statsFertilized.textContent = `${plant.timesFertilized} times`;
-                    if (statsPersonality) statsPersonality.textContent = plant.personality.charAt(0).toUpperCase() + plant.personality.slice(1);
-                    
-                    showModal(statsModal);
-                } catch (error) {
-                    console.error("Error showing stats modal:", error);
-                }
-            }
-            
-            // Show settings modal
-            function showSettingsModal() {
-                try {
-                    // Reset selections
-                    if (themeOptions) {
-                        themeOptions.forEach(option => {
-                            option.classList.remove('selected');
-                            if (option.dataset.theme === plant.theme) {
-                                option.classList.add('selected');
-                            }
-                        });
-                    }
-                    
-                    if (personalityOptions) {
-                        personalityOptions.forEach(option => {
-                            option.classList.remove('selected');
-                            if (option.dataset.personality === plant.personality) {
-                                option.classList.add('selected');
-                            }
-                        });
-                    }
-                    
-                    showModal(settingsModal);
-                } catch (error) {
-                    console.error("Error showing settings modal:", error);
-                }
-            }
-            
-            // Show reset confirmation modal
-            function showResetModal() {
-                showModal(resetModal);
-            }
-            
-            // Select theme
-            function selectTheme(option) {
-                try {
-                    if (themeOptions) {
-                        themeOptions.forEach(opt => opt.classList.remove('selected'));
-                    }
+            document.querySelectorAll('.pattern-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.pattern-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
                     option.classList.add('selected');
-                } catch (error) {
-                    console.error("Error selecting theme:", error);
-                }
-            }
+                });
+            });
             
-            // Select personality
-            function selectPersonality(option) {
-                try {
-                    if (personalityOptions) {
-                        personalityOptions.forEach(opt => opt.classList.remove('selected'));
-                    }
+            document.querySelectorAll('.personality-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.personality-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
                     option.classList.add('selected');
-                } catch (error) {
-                    console.error("Error selecting personality:", error);
-                }
-            }
+                });
+            });
             
-            // Save settings
-            function saveSettings() {
-                try {
-                    const selectedTheme = document.querySelector('.theme-option.selected');
-                    const selectedPersonality = document.querySelector('.personality-option.selected');
-                    
-                    if (selectedTheme && selectedPersonality) {
-                        plant.theme = selectedTheme.dataset.theme;
-                        plant.personality = selectedPersonality.dataset.personality;
-                        
-                        applyTheme(plant.theme);
-                        savePlant();
-                        hideModal(settingsModal);
-                        
-                        showMessage("Settings updated!");
-                        console.log("Settings updated - Theme:", plant.theme, "Personality:", plant.personality);
-                    }
-                } catch (error) {
-                    console.error("Error saving settings:", error);
-                }
-            }
+            document.getElementById('helpBtn').addEventListener('click', openHelpModal);
+            document.getElementById('resetBtn').addEventListener('click', openResetConfirmModal);
             
-            // Show modal
-            function showModal(modal) {
-                try {
-                    if (modal) {
-                        modal.classList.add('active');
-                    }
-                } catch (error) {
-                    console.error("Error showing modal:", error);
-                }
-            }
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+            document.getElementById('cancelSettingsBtn').addEventListener('click', () => {
+                settingsModal.style.display = 'none';
+            });
             
-            // Hide modal
-            function hideModal(modal) {
-                try {
-                    if (modal) {
-                        modal.classList.remove('active');
-                    }
-                } catch (error) {
-                    console.error("Error hiding modal:", error);
-                }
-            }
+            // Help modal
+            document.getElementById('closeHelpBtn').addEventListener('click', () => {
+                helpModal.style.display = 'none';
+            });
             
-            // Show message
-            function showMessage(text, autoHide = true) {
-                try {
-                    if (messageElement) {
-                        messageElement.textContent = text;
-                        
-                        // Clear message after 3 seconds if autoHide is true
-                        if (autoHide) {
-                            setTimeout(function() {
-                                if (plant.waterLevel < 30) {
-                                    showMessage(getRandomResponse('thirsty'), false);
-                                } else {
-                                    showMessage(getRandomResponse('happy'), false);
-                                }
-                            }, 3000);
-                        }
-                    }
-                } catch (error) {
-                    console.error("Error showing message:", error);
-                }
-            }
-            
-            // Initialize the game
-            init();
-        });
+            // Reset confirmation modal
+            document.getElementById('confirmResetBtn').addEventListener('click', resetPlant);
+            document.getElementById('cancelResetBtn').addEventListener('click', () => {
+                resetConfirmModal.style.display = 'none';
+            });
+        }
+        
+        // Initialize the app
+        init();
+        
+        // Start with device powered off
+        screen.classList.add('screen-off');
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94906259877b593d',t:'MTc0ODc5ODQ1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9491912e003b7067',t:'MTc0ODgxMDg1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
 </body></html>
