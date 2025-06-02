@@ -1,7 +1,7 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GROWI - Grow &amp; Care For Your Own Plant!</title>
+    <title>GROWI - Virtual Plant Pet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -12,14 +12,12 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-attachment: fixed;
             height: 100vh;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0;
         }
         
         .device {
@@ -27,17 +25,14 @@
             width: 450px;
             height: 750px;
             border-radius: 30px;
-            background-color: #4CAF50; /* Default green color */
+            background-color: #4CAF50;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            transition: background-color 0.5s;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 25px;
             image-rendering: pixelated;
-            -webkit-font-smoothing: none;
-            -moz-osx-font-smoothing: grayscale;
         }
         
         .device::before {
@@ -51,90 +46,30 @@
             border-radius: 30px;
             pointer-events: none;
             z-index: 10;
-            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
         }
         
-        /* Heart pattern */
-        .pattern-hearts {
-            position: relative;
-        }
-        
-        .heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: rgba(255, 255, 255, 0.5);
-            transform: rotate(45deg);
-            z-index: 0;
-        }
-        
-        .heart::before,
-        .heart::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-        }
-        
-        .heart::before {
-            top: -10px;
-            left: 0;
-        }
-        
-        .heart::after {
-            top: 0;
-            left: -10px;
-        }
-        
-        /* Striped pattern */
+        /* Pattern styles */
         .pattern-striped {
-            position: relative;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 15px,
+                rgba(255, 255, 255, 0.2) 15px,
+                rgba(255, 255, 255, 0.2) 30px
+            );
         }
         
-        .pattern-striped::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: linear-gradient(45deg, 
-                rgba(255, 255, 255, 0.3) 25%, 
-                transparent 25%, 
-                transparent 50%, 
-                rgba(255, 255, 255, 0.3) 50%, 
-                rgba(255, 255, 255, 0.3) 75%, 
-                transparent 75%, 
-                transparent);
-            background-size: 30px 30px;
-            z-index: 0;
-            pointer-events: none;
-            border-radius: 30px;
-        }
-        
-        /* Polka dot pattern */
         .pattern-polka {
-            position: relative;
-        }
-        
-        .pattern-polka::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
             background-image: radial-gradient(
-                circle, 
-                rgba(255, 255, 255, 0.4) 8px, 
-                transparent 8px
+                rgba(255, 255, 255, 0.2) 15%, 
+                transparent 16%
             );
             background-size: 30px 30px;
-            z-index: 0;
-            pointer-events: none;
-            border-radius: 30px;
+        }
+        
+        .pattern-hearts {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 10 C 15 0, 5 5, 10 15 Q 15 25, 20 30 Q 25 25, 30 15 C 35 5, 25 0, 20 10 Z' fill='rgba(255,255,255,0.2)'/%3E%3C/svg%3E");
+            background-size: 40px 40px;
         }
         
         .screen {
@@ -147,7 +82,6 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            image-rendering: pixelated;
             z-index: 1;
         }
         
@@ -160,12 +94,71 @@
             z-index: 1;
         }
         
+        /* Custom backgrounds for each plant species */
+        .screen-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.8;
+            z-index: -1;
+        }
+        
+        /* Sunflower - sunny field background */
+        .screen-background.Sunflower {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Crect width='360' height='360' fill='%23a7d9ff'/%3E%3Crect y='180' width='360' height='180' fill='%2392d36e'/%3E%3Ccircle cx='300' cy='60' r='40' fill='%23ffeb3b'/%3E%3C/svg%3E");
+        }
+        
+        /* Rose - elegant indoor background with window */
+        .screen-background.Rose {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Crect width='360' height='360' fill='%23f5f5f5'/%3E%3Crect x='40' y='100' width='280' height='140' fill='%23d7ccc8'/%3E%3Crect y='240' width='360' height='120' fill='%23a67c52'/%3E%3Crect x='120' y='40' width='120' height='120' fill='%23a7d9ff'/%3E%3Crect x='120' y='40' width='120' height='120' fill='none' stroke='%23795548' stroke-width='8'/%3E%3Cline x1='180' y1='40' x2='180' y2='160' stroke='%23795548' stroke-width='8'/%3E%3Cline x1='120' y1='100' x2='240' y2='100' stroke='%23795548' stroke-width='8'/%3E%3C/svg%3E");
+        }
+        
+        /* Marijuana - dark black/grey growhouse background with rectangular red light */
+        .screen-background.Weed {
+            background-color: #1a1a1a;
+            background-image: 
+                radial-gradient(ellipse at 50% 30%, rgba(255, 0, 0, 0.3) 0%, rgba(255, 0, 0, 0.1) 50%, transparent 70%),
+                linear-gradient(to bottom, #1a1a1a 0%, #1a1a1a 100%);
+        }
+        
+        /* Cactus - desert themed background */
+        .screen-background.Cactus {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Crect width='360' height='360' fill='%23ffefc0'/%3E%3Crect y='240' width='360' height='120' fill='%23e8c170'/%3E%3Ccircle cx='300' cy='60' r='40' fill='%23ffeb3b'/%3E%3C/svg%3E");
+        }
+        
+        /* Pot container */
+        .pot-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 80px;
+            z-index: 1;
+        }
+        
+        .pot-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: relative;
+            bottom: -10px;
+        }
+        
         .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px; /* Increased from 8px to 12px */
-            height: 30px; /* Added fixed height to ensure consistent space */
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            background-color: rgba(195, 230, 203, 0.8);
+            padding: 5px;
+            border-radius: 5px;
         }
         
         .water-container {
@@ -205,19 +198,26 @@
             color: #fff;
             padding: 3px 8px;
             border-radius: 4px;
-            white-space: nowrap; /* Prevent text wrapping */
-            min-width: 90px; /* Ensure enough width for the text */
+            white-space: nowrap;
+            min-width: 100px;
             text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .plant-name {
             text-align: center;
             font-size: 14px;
-            margin: 8px 0 12px 0; /* Increased bottom margin from 8px to 12px */
+            margin: 8px 0;
             background-color: #333;
             color: #fff;
             padding: 5px;
             border-radius: 4px;
+            position: relative;
+            z-index: 2;
         }
         
         .plant-container {
@@ -229,9 +229,42 @@
         }
         
         .plant-image {
-            max-width: 80%;
-            max-height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 200px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .plant-image img {
+            max-height: 180px;
+            max-width: 100%;
             object-fit: contain;
+            position: relative;
+            z-index: 3;
+        }
+        
+        /* Species-specific styling */
+        .plant-image.Sunflower img {
+            max-height: 180px;
+            transform: translateY(-45px) translateX(5px); /* Raised more and moved right */
+        }
+        
+        .plant-image.Weed img {
+            max-height: 200px; /* Increased size */
+            transform: translateY(30px); /* Lowered so bottom is under message box */
+        }
+        
+        .plant-image.Rose img {
+            max-height: 150px;
+            transform: translateY(-30px); /* Raised slightly more */
+        }
+        
+        .plant-image.Cactus img {
+            max-height: 180px;
+            transform: translateY(-35px); /* Raised slightly */
         }
         
         .plant-message {
@@ -247,6 +280,7 @@
             padding: 8px;
             border-radius: 6px;
             margin: 0 15px;
+            z-index: 5;
         }
         
         .buttons-container {
@@ -325,7 +359,7 @@
         .power-button {
             width: 65px;
             height: 65px;
-            background-color: #e57373;
+            background-color: #c74545; /* Default darker color */
             border: 4px solid #333;
             border-radius: 50%;
             cursor: pointer;
@@ -375,7 +409,9 @@
         
         .screen-off .screen-content,
         .screen-off .startup-screen,
-        .screen-off .shutdown-screen {
+        .screen-off .shutdown-screen,
+        .screen-off .adoption-screen,
+        .screen-off .naming-screen {
             display: none !important;
         }
         
@@ -546,60 +582,190 @@
             display: none;
         }
         
-        .plant-animation {
-            display: none;
+        /* Growth animation */
+        @keyframes grow {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
-        .plant-static {
-            display: block;
+        .growing {
+            animation: grow 2s ease-in-out;
         }
         
-        input[type="text"] {
-            font-family: 'Press Start 2P', cursive;
-            image-rendering: pixelated;
-        }
-        
-        /* Heart pattern container */
-        .heart-pattern {
+        /* Adoption screen */
+        .adoption-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            background-color: #c3e6cb;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            z-index: 15;
+            box-sizing: border-box;
+        }
+        
+        .adoption-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 15px;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .adoption-subtitle {
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .plant-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .plant-selection-option {
+            background-color: #fff;
+            border: 3px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .plant-selection-option:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .plant-selection-option.selected {
+            background-color: #9c27b0;
+            color: white;
+        }
+        
+        .adoption-button {
+            background-color: #9c27b0;
+            color: white;
+            padding: 10px 20px;
+            border: 3px solid #333;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            align-self: center;
+        }
+        
+        .adoption-button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        
+        /* Naming screen */
+        .naming-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #c3e6cb;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            z-index: 15;
+            box-sizing: border-box;
+        }
+        
+        .naming-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 15px;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .naming-subtitle {
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        
+        .naming-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            flex-grow: 1;
+        }
+        
+        .naming-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 12px;
+            border: 3px solid #333;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+        
+        .naming-button {
+            background-color: #9c27b0;
+            color: white;
+            padding: 10px 20px;
+            border: 3px solid #333;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            align-self: center;
+            margin-top: auto;
+        }
+        
+        .naming-button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
         }
     </style>
 <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.hidden{display:none}.w-full{width:100%}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.border-2{border-width:2px}.border-gray-800{--tw-border-opacity:1;border-color:rgb(31 41 55 / var(--tw-border-opacity, 1))}.p-2{padding:0.5rem}.text-center{text-align:center}.text-xs{font-size:0.75rem;line-height:1rem}</style></head>
 <body>
     <div id="device" class="device" style="background-color: rgb(76, 175, 80);">
         <div id="screen" class="screen screen-off">
-            <div id="screenContent" class="screen-content" style="visibility: hidden;">
+            <div id="screenContent" class="screen-content" style="visibility: visible;">
+                <div id="screenBackground" class="screen-background Sunflower"></div>
                 <div class="status-bar">
                     <div class="water-container">
                         <div class="water-label">WATER:</div>
                         <div class="water-bar">
-                            <div id="waterLevel" class="water-level" style="width: 25%;"></div>
+                            <div id="waterLevel" class="water-level" style="width: 24%;"></div>
                         </div>
-                        <div id="waterPercentage" class="water-percentage">25%</div>
+                        <div id="waterPercentage" class="water-percentage">24%</div>
                     </div>
-                    <div id="growthStage" class="growth-stage">Stage 1</div>
+                    <div id="growthStage" class="growth-stage">Seedling</div>
                 </div>
-                <div id="plantName" class="plant-name">Sunny</div>
+                <div id="plantName" class="plant-name">bill</div>
                 <div class="plant-container">
-                    <div id="plantImage" class="plant-image">
-                    <div class="plant-static" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="50" fill="#4CAF50"></circle>
-                            <text x="60" y="65" text-anchor="middle" fill="white" font-size="14">Stage 1</text>
-                        </svg>
+                    <div id="plantImage" class="plant-image Sunflower"><img src="Plant/Sunflower1.png" alt="Sunflower"></div>
+                    <!-- Pot image container - hidden for Weed species -->
+                    <div id="potContainer" class="pot-container" style="display: block;">
+                        <img src="Plant/Pot.png" alt="Flower Pot" class="pot-image">
                     </div>
-                </div>
                     <div id="plantMessage" class="plant-message">What a beautiful day!</div>
                 </div>
             </div>
             
-            <!-- Startup Screen (inside the screen) -->
+            <!-- Startup Screen -->
             <div id="startupScreen" class="startup-screen" style="display: none;">
                 <div>GROWI v1.0</div>
                 <div>BOOTING UP...</div>
@@ -608,9 +774,35 @@
                 </div>
             </div>
             
-            <!-- Shutdown Screen (inside the screen) -->
+            <!-- Shutdown Screen -->
             <div id="shutdownScreen" class="shutdown-screen" style="display: none;">
                 <div>SHUTTING DOWN...</div>
+            </div>
+            
+            <!-- Adoption Screen -->
+            <div id="adoptionScreen" class="adoption-screen hidden" style="display: none;">
+                <div class="adoption-title">WELCOME TO GROWI</div>
+                <div class="adoption-subtitle">Choose a plant to adopt:</div>
+                
+                <div class="plant-selection">
+                    <div class="plant-selection-option" data-plant="Sunflower">Sunflower</div>
+                    <div class="plant-selection-option" data-plant="Rose">Rose</div>
+                    <div class="plant-selection-option" data-plant="Weed">Marijuana</div>
+                    <div class="plant-selection-option" data-plant="Cactus">Cactus</div>
+                </div>
+                
+                <button id="adoptButton" class="adoption-button" disabled="">ADOPT</button>
+            </div>
+            
+            <!-- Naming Screen -->
+            <div id="namingScreen" class="naming-screen hidden" style="display: none;">
+                <div class="naming-title">NAME YOUR PLANT</div>
+                <div class="naming-subtitle">What would you like to name your plant?</div>
+                
+                <div class="naming-input-container">
+                    <input type="text" id="plantNameInput" class="naming-input" maxlength="12" placeholder="Enter a name">
+                    <button id="confirmNameButton" class="naming-button" disabled="">CONFIRM</button>
+                </div>
             </div>
         </div>
         
@@ -628,13 +820,10 @@
         </div>
         
         <div class="power-button-container">
-            <div id="powerButton" class="power-button">
+            <div id="powerButton" class="power-button" style="background-color: rgb(46, 125, 50);">
                 <div class="power-icon"></div>
             </div>
         </div>
-        
-        <!-- Heart pattern container -->
-        <div id="heartPattern" class="heart-pattern" style="display: block;"><div class="heart" style="left: 37.5339px; top: 34.2738px;"></div><div class="heart" style="left: 92.6694px; top: 31.7532px;"></div><div class="heart" style="left: 152.683px; top: 38.4131px;"></div><div class="heart" style="left: 213.117px; top: 33.2434px;"></div><div class="heart" style="left: 277.57px; top: 30.8123px;"></div><div class="heart" style="left: 333.936px; top: 34.0231px;"></div><div class="heart" style="left: 390.52px; top: 35.7378px;"></div><div class="heart" style="left: 34.9152px; top: 96.0413px;"></div><div class="heart" style="left: 99.8784px; top: 92.2584px;"></div><div class="heart" style="left: 154.193px; top: 96.9528px;"></div><div class="heart" style="left: 213.619px; top: 99.9254px;"></div><div class="heart" style="left: 278.758px; top: 91.0686px;"></div><div class="heart" style="left: 339.097px; top: 95.8655px;"></div><div class="heart" style="left: 395.291px; top: 98.9727px;"></div><div class="heart" style="left: 32.0689px; top: 156.947px;"></div><div class="heart" style="left: 99.116px; top: 157.903px;"></div><div class="heart" style="left: 156.06px; top: 150.156px;"></div><div class="heart" style="left: 217.351px; top: 157.983px;"></div><div class="heart" style="left: 270.275px; top: 150.549px;"></div><div class="heart" style="left: 331.641px; top: 156.032px;"></div><div class="heart" style="left: 393.506px; top: 151.015px;"></div><div class="heart" style="left: 32.908px; top: 211.383px;"></div><div class="heart" style="left: 91.0772px; top: 217.668px;"></div><div class="heart" style="left: 152.24px; top: 219.189px;"></div><div class="heart" style="left: 213.797px; top: 216.259px;"></div><div class="heart" style="left: 271.731px; top: 211.661px;"></div><div class="heart" style="left: 334.737px; top: 212.323px;"></div><div class="heart" style="left: 398.125px; top: 211.407px;"></div><div class="heart" style="left: 33.7025px; top: 276.08px;"></div><div class="heart" style="left: 99.6723px; top: 277.247px;"></div><div class="heart" style="left: 157.232px; top: 271.156px;"></div><div class="heart" style="left: 213.219px; top: 277.757px;"></div><div class="heart" style="left: 274.756px; top: 273.533px;"></div><div class="heart" style="left: 338.298px; top: 277.46px;"></div><div class="heart" style="left: 395.876px; top: 276.83px;"></div><div class="heart" style="left: 35.3229px; top: 334.721px;"></div><div class="heart" style="left: 91.9821px; top: 339.489px;"></div><div class="heart" style="left: 153.089px; top: 333.739px;"></div><div class="heart" style="left: 213.58px; top: 330.344px;"></div><div class="heart" style="left: 273.608px; top: 339.527px;"></div><div class="heart" style="left: 332.801px; top: 334.428px;"></div><div class="heart" style="left: 395.115px; top: 332.212px;"></div><div class="heart" style="left: 31.795px; top: 397.409px;"></div><div class="heart" style="left: 93.5246px; top: 399.714px;"></div><div class="heart" style="left: 151.511px; top: 397.379px;"></div><div class="heart" style="left: 218.582px; top: 396.318px;"></div><div class="heart" style="left: 274.747px; top: 395.081px;"></div><div class="heart" style="left: 339.206px; top: 396.467px;"></div><div class="heart" style="left: 397.356px; top: 390.223px;"></div><div class="heart" style="left: 31.9961px; top: 459.423px;"></div><div class="heart" style="left: 92.7144px; top: 457.195px;"></div><div class="heart" style="left: 156.453px; top: 454.549px;"></div><div class="heart" style="left: 213.33px; top: 454.102px;"></div><div class="heart" style="left: 270.806px; top: 458.181px;"></div><div class="heart" style="left: 338.816px; top: 456.81px;"></div><div class="heart" style="left: 395.755px; top: 450.746px;"></div><div class="heart" style="left: 30.8186px; top: 517.102px;"></div><div class="heart" style="left: 93.3427px; top: 515.414px;"></div><div class="heart" style="left: 157.765px; top: 510.757px;"></div><div class="heart" style="left: 214.031px; top: 519.048px;"></div><div class="heart" style="left: 279.589px; top: 519.891px;"></div><div class="heart" style="left: 331.713px; top: 512.231px;"></div><div class="heart" style="left: 398.148px; top: 515.722px;"></div><div class="heart" style="left: 35.2705px; top: 571.441px;"></div><div class="heart" style="left: 92.9914px; top: 572.627px;"></div><div class="heart" style="left: 158.188px; top: 570.92px;"></div><div class="heart" style="left: 216.895px; top: 570.298px;"></div><div class="heart" style="left: 273.566px; top: 575.431px;"></div><div class="heart" style="left: 331.838px; top: 573.355px;"></div><div class="heart" style="left: 392.221px; top: 573.042px;"></div><div class="heart" style="left: 30.6965px; top: 634.968px;"></div><div class="heart" style="left: 93.2551px; top: 635.81px;"></div><div class="heart" style="left: 151.414px; top: 634.572px;"></div><div class="heart" style="left: 212.842px; top: 639.409px;"></div><div class="heart" style="left: 277.922px; top: 634.902px;"></div><div class="heart" style="left: 333.743px; top: 635.996px;"></div><div class="heart" style="left: 393.304px; top: 634.127px;"></div><div class="heart" style="left: 36.8316px; top: 692.833px;"></div><div class="heart" style="left: 96.5852px; top: 696.894px;"></div><div class="heart" style="left: 156.912px; top: 691.029px;"></div><div class="heart" style="left: 215.672px; top: 692.181px;"></div><div class="heart" style="left: 274.614px; top: 695.694px;"></div><div class="heart" style="left: 337.544px; top: 695.042px;"></div><div class="heart" style="left: 398.609px; top: 696.368px;"></div></div>
         
         <!-- Rename Modal -->
         <div id="renameModal" class="modal" style="display: none;">
@@ -653,9 +842,9 @@
             <div class="modal-content">
                 <div class="modal-title">CHOOSE A PLANT</div>
                 <div id="plantOptions">
-                    <div class="plant-option selected" data-plant="Sunflower">Sunflower</div>
+                    <div class="plant-option" data-plant="Sunflower">Sunflower</div>
                     <div class="plant-option" data-plant="Rose">Rose</div>
-                    <div class="plant-option" data-plant="Fern">Fern</div>
+                    <div class="plant-option" data-plant="Weed">Marijuana</div>
                     <div class="plant-option" data-plant="Cactus">Cactus</div>
                 </div>
                 <div class="modal-buttons">
@@ -684,11 +873,11 @@
                 <div id="statsContent">
                     <div class="stats-item">
                         <span>Name:</span>
-                        <span id="statName">Sunny</span>
+                        <span id="statName">bill</span>
                     </div>
                     <div class="stats-item">
                         <span>Water:</span>
-                        <span id="statWater">25%</span>
+                        <span id="statWater">24%</span>
                     </div>
                     <div class="stats-item">
                         <span>Age:</span>
@@ -700,7 +889,7 @@
                     </div>
                     <div class="stats-item">
                         <span>Growth Stage:</span>
-                        <span id="statGrowth">1</span>
+                        <span id="statGrowth">Seedling</span>
                     </div>
                     <div class="stats-item">
                         <span>Times Watered:</span>
@@ -730,8 +919,8 @@
                 <div class="mb-2">
                     <div class="mb-1">Pattern:</div>
                     <div class="pattern-options">
-                        <div class="pattern-option" data-pattern="plain">Plain</div>
-                        <div class="pattern-option selected" data-pattern="hearts">Hearts</div>
+                        <div class="pattern-option selected" data-pattern="plain">Plain</div>
+                        <div class="pattern-option" data-pattern="hearts">Hearts</div>
                         <div class="pattern-option" data-pattern="striped">Striped</div>
                         <div class="pattern-option" data-pattern="polka">Polka Dots</div>
                     </div>
@@ -792,23 +981,18 @@
     </div>
 
     <script>
-        // Audio elements (placeholders)
-        const buttonSound = new Audio('Sounds/button.mp3');
-        const powerUpSound = new Audio('Sounds/powerup.mp3');
-        const powerDownSound = new Audio('Sounds/powerdown.mp3');
-        const waterSound = new Audio('Sounds/water.mp3');
-        const fertilizeSound = new Audio('Sounds/fertilize.mp3');
-        
         // DOM elements
         const device = document.getElementById('device');
         const screen = document.getElementById('screen');
         const screenContent = document.getElementById('screenContent');
+        const screenBackground = document.getElementById('screenBackground');
         const waterLevel = document.getElementById('waterLevel');
         const waterPercentage = document.getElementById('waterPercentage');
         const growthStage = document.getElementById('growthStage');
         const plantName = document.getElementById('plantName');
         const plantImage = document.getElementById('plantImage');
         const plantMessage = document.getElementById('plantMessage');
+        const potContainer = document.getElementById('potContainer');
         const btnWater = document.getElementById('btnWater');
         const btnFertilize = document.getElementById('btnFertilize');
         const btnRename = document.getElementById('btnRename');
@@ -818,17 +1002,34 @@
         const powerButton = document.getElementById('powerButton');
         const startupScreen = document.getElementById('startupScreen');
         const shutdownScreen = document.getElementById('shutdownScreen');
+        const adoptionScreen = document.getElementById('adoptionScreen');
+        const namingScreen = document.getElementById('namingScreen');
         const startupLoadingBar = document.getElementById('startupLoadingBar');
-        const heartPattern = document.getElementById('heartPattern');
         
-        // Modals
-        const renameModal = document.getElementById('renameModal');
-        const changePlantModal = document.getElementById('changePlantModal');
-        const changePlantConfirmModal = document.getElementById('changePlantConfirmModal');
-        const statsModal = document.getElementById('statsModal');
-        const settingsModal = document.getElementById('settingsModal');
-        const helpModal = document.getElementById('helpModal');
-        const resetConfirmModal = document.getElementById('resetConfirmModal');
+        // Sound effects
+        const buttonSound = new Audio('Sounds/button.mp3');
+        const fertilizeSound = new Audio('Sounds/fertilize.mp3');
+        const waterSound = new Audio('Sounds/water.mp3');
+        const powerOnSound = new Audio('Sounds/on.mp3');
+        const powerOffSound = new Audio('Sounds/off.mp3');
+        
+        // Adoption screen elements
+        const plantSelectionOptions = document.querySelectorAll('.plant-selection-option');
+        const adoptButton = document.getElementById('adoptButton');
+        
+        // Naming screen elements
+        const plantNameInput = document.getElementById('plantNameInput');
+        const confirmNameButton = document.getElementById('confirmNameButton');
+        
+        // Growth stage names
+        const growthStageNames = {
+            1: "Seedling",
+            2: "Sapling",
+            3: "Growing",
+            4: "Budding",
+            5: "Blooming",
+            6: "Mature"
+        };
         
         // Plant data and state
         let isPoweredOn = false;
@@ -839,6 +1040,8 @@
         let lastAction = null; // Track the last action performed
         let wasOverwatered = false; // Track if the plant was overwatered
         let selectedNewPlant = null; // Track the newly selected plant
+        let isFirstTime = true; // Track if this is the first time opening the app
+        let selectedPlantSpecies = null; // Track the selected plant species during adoption
         let plantData = {
             name: 'Sunny',
             species: 'Sunflower',
@@ -852,31 +1055,11 @@
             createdAt: new Date().toISOString()
         };
         
-        // Device customization - set default to green (120 hue) and plain pattern
+        // Device customization
         let deviceCustomization = {
             color: 120,
             pattern: 'plain'
         };
-        
-        // Create heart pattern
-        function createHeartPattern() {
-            heartPattern.innerHTML = '';
-            const deviceWidth = device.offsetWidth;
-            const deviceHeight = device.offsetHeight;
-            
-            // Create a grid of hearts
-            const spacing = 60;
-            
-            for (let y = 30; y < deviceHeight - 30; y += spacing) {
-                for (let x = 30; x < deviceWidth - 30; x += spacing) {
-                    const heart = document.createElement('div');
-                    heart.className = 'heart';
-                    heart.style.left = `${x + (Math.random() * 10)}px`;
-                    heart.style.top = `${y + (Math.random() * 10)}px`;
-                    heartPattern.appendChild(heart);
-                }
-            }
-        }
         
         // Personality messages
         const personalityMessages = {
@@ -922,6 +1105,50 @@
             }
         };
         
+        // Marijuana-specific messages
+        const weedMessages = {
+            cheerful: {
+                greeting: ["Hi! I'm your happy little plant!", "Growing green and feeling great!", "What a beautiful day to grow!"],
+                watered: ["Ahhh, that's the good stuff!", "Water makes me stronger!", "Thanks for the drink!"],
+                overwatered: ["Whoa! That's a lot of water!", "Even I can drown!", "I'm floating away!"],
+                fertilized: ["Nutrients! Now I'll grow big and strong!", "I feel super energized now!", "Watch me flourish!"],
+                thirsty: ["Could use some water, friend!", "A little thirsty over here!", "Water please!"],
+                growing: ["Growing taller every day!", "Can't stop me now!", "Watch me reach new heights!"],
+                renamed: ["I love my new name {name}!", "You can call me {name}!", "{name} the magnificent!"],
+                changed: ["I've been transformed!", "New look, same good vibes!", "Ready for a fresh start!"]
+            },
+            funny: {
+                greeting: ["I'm the plant they warned you about!", "High there! Get it?", "Ready to grow some good times!"],
+                watered: ["Hydration for elevation!", "Water you doing? Helping me get high?", "Thanks for the growth juice!"],
+                overwatered: ["Whoa, I'm drowning in attention here!", "I'm not an aquatic plant!", "Too much of a good thing!"],
+                fertilized: ["Oh yeah, that's the good stuff!", "Fertilizer? More like super-power!", "I'm gonna be so tall!"],
+                thirsty: ["I'm drier than your humor right now!", "Thirstier than a stoner with munchies!", "Water me or I'll get cranky!"],
+                growing: ["Growing higher than your expectations!", "One day you'll be proud of this care!", "Unstoppable growth activated!"],
+                renamed: ["Call me {name}, bringer of chill vibes!", "{name} the relaxation specialist!", "My new name {name} is totally groovy!"],
+                changed: ["New form, same mission: good times!", "You've unleashed a new strain!", "This isn't even my final form!"]
+            },
+            chill: {
+                greeting: ["Just growing and flowing.", "Vibing in this pot.", "No stress, just growth."],
+                watered: ["Cool, thanks for the water.", "Hydration appreciated.", "Nice water, dude."],
+                overwatered: ["Whoa, that's plenty.", "Easy with the water.", "I'm good, really."],
+                fertilized: ["Nice boost.", "Extra strength. Cool.", "Growing power up."],
+                thirsty: ["Could use some water.", "Bit dry in here.", "Water would be nice."],
+                growing: ["Growing at my own pace.", "Can't rush perfection.", "Taking it one leaf at a time."],
+                renamed: ["{name}. I can work with that.", "Cool name. {name} it is.", "{name} the relaxed. Nice."],
+                changed: ["New look. Same attitude.", "Different plant. Same vibe.", "Change is whatever."]
+            },
+            moody: {
+                greeting: ["Oh great, it's the human.", "What, expecting me to be happy?", "I don't need your attention."],
+                watered: ["Water? I survive on neglect, you know.", "I would have been fine without it.", "I suppose that helps."],
+                overwatered: ["Are you trying to drown me?", "Even I have limits with water!", "Great, now I'm waterlogged."],
+                fertilized: ["Oh sure, NOW you want me to grow.", "Fertilizer won't make me like you more.", "I was doing fine without your help."],
+                thirsty: ["I'm literally dying of thirst here!", "Even I need SOME water!", "Your neglect is impressive."],
+                growing: ["Growing despite your pathetic care.", "You can't kill me that easily.", "I'll outlive your gardening phase."],
+                renamed: ["Fine, call me {name} then.", "Whatever, {name} it is.", "I preferred my old name."],
+                changed: ["Oh great, a new identity crisis.", "I was just getting used to being me.", "This better be an improvement."]
+            }
+        };
+        
         // Initialize
         function init() {
             loadData();
@@ -929,8 +1156,11 @@
             setupEventListeners();
             startWaterTimer();
             updateFertilizeButton();
-            createHeartPattern();
-            updateDeviceAppearance(); // Make sure device starts with correct appearance
+            updateDeviceAppearance();
+            
+            // Make sure the device starts powered off
+            isPoweredOn = false;
+            screen.classList.add('screen-off');
         }
         
         // Load data from localStorage
@@ -940,6 +1170,7 @@
             
             if (savedPlantData) {
                 plantData = JSON.parse(savedPlantData);
+                isFirstTime = false;
                 
                 // Calculate water loss since last visit
                 const lastSaved = new Date(plantData.lastSaved || plantData.createdAt);
@@ -965,18 +1196,13 @@
                 // Update age in days
                 const createdAt = new Date(plantData.createdAt);
                 plantData.age = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+            } else {
+                isFirstTime = true;
             }
             
             if (savedDeviceCustomization) {
                 deviceCustomization = JSON.parse(savedDeviceCustomization);
-            } else {
-                // If no saved customization, use green and plain as default
-                deviceCustomization = {
-                    color: 120,
-                    pattern: 'plain'
-                };
             }
-            updateDeviceAppearance();
         }
         
         // Save data to localStorage
@@ -992,13 +1218,23 @@
             waterLevel.style.width = `${plantData.waterLevel}%`;
             waterPercentage.textContent = `${plantData.waterLevel}%`;
             
-            // Update growth stage
-            growthStage.textContent = `Stage ${plantData.growthStage}`;
+            // Update growth stage with named stages
+            growthStage.textContent = growthStageNames[plantData.growthStage] || `Stage ${plantData.growthStage}`;
             
             // Update plant name
             plantName.textContent = plantData.name;
             
-            // Update plant image (static frame)
+            // Update screen background based on plant species
+            screenBackground.className = `screen-background ${plantData.species}`;
+            
+            // Show/hide pot based on plant species
+            if (plantData.species === 'Weed') {
+                potContainer.style.display = 'none';
+            } else {
+                potContainer.style.display = 'block';
+            }
+            
+            // Update plant image
             updatePlantImage(false);
             
             // Update plant message based on last action
@@ -1008,8 +1244,8 @@
             document.getElementById('statName').textContent = plantData.name;
             document.getElementById('statWater').textContent = `${plantData.waterLevel}%`;
             document.getElementById('statAge').textContent = `${plantData.age} days`;
-            document.getElementById('statSpecies').textContent = plantData.species;
-            document.getElementById('statGrowth').textContent = plantData.growthStage;
+            document.getElementById('statSpecies').textContent = plantData.species === 'Weed' ? 'Marijuana' : plantData.species;
+            document.getElementById('statGrowth').textContent = growthStageNames[plantData.growthStage] || `Stage ${plantData.growthStage}`;
             document.getElementById('statWatered').textContent = plantData.timesWatered;
             document.getElementById('statPersonality').textContent = plantData.personality.charAt(0).toUpperCase() + plantData.personality.slice(1);
             
@@ -1018,62 +1254,41 @@
         
         // Update plant image based on species and growth stage
         function updatePlantImage(animate = false) {
-            // Use the specific GIF files directly
-            let plantGifPath;
+            // Get the correct image path based on species and growth stage
+            const imagePath = `Plant/${plantData.species}${plantData.growthStage}.png`;
             
-            if (plantData.species === 'Sunflower') {
-                plantGifPath = 'Plant/Sunflower.gif';
-            } else if (plantData.species === 'Rose') {
-                plantGifPath = 'Plant/Rose.gif';
-            } else if (plantData.species === 'Fern') {
-                plantGifPath = 'Plant/Fern.gif';
-            } else if (plantData.species === 'Cactus') {
-                plantGifPath = 'Plant/Cactus.gif';
-            }
+            // Add species-specific class to the plant image container
+            plantImage.className = `plant-image ${plantData.species}`;
             
             if (animate) {
                 // Show animation when growing
-                plantImage.innerHTML = `
-                    <img src="${plantGifPath}" alt="${plantData.species}" class="plant-animation" style="max-width: 100%; max-height: 100%;">
-                    <div class="plant-static" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="50" fill="#4CAF50" />
-                            <text x="60" y="65" text-anchor="middle" fill="white" font-size="14">Stage ${plantData.growthStage}</text>
-                        </svg>
-                    </div>
-                `;
+                plantImage.innerHTML = `<img src="${imagePath}" alt="${plantData.species}" class="growing">`;
                 
                 // Start growth animation
                 isGrowthAnimating = true;
-                const animationElement = plantImage.querySelector('.plant-animation');
-                const staticElement = plantImage.querySelector('.plant-static');
-                
-                animationElement.style.display = 'block';
-                staticElement.style.display = 'none';
                 
                 // After animation completes, show static image
                 clearTimeout(growthAnimationTimer);
                 growthAnimationTimer = setTimeout(() => {
-                    animationElement.style.display = 'none';
-                    staticElement.style.display = 'block';
+                    plantImage.innerHTML = `<img src="${imagePath}" alt="${plantData.species}">`;
                     isGrowthAnimating = false;
-                }, 3000); // Animation duration
+                }, 2000); // Animation duration
             } else {
                 // Show static image for current growth stage
-                plantImage.innerHTML = `
-                    <div class="plant-static" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="50" fill="#4CAF50" />
-                            <text x="60" y="65" text-anchor="middle" fill="white" font-size="14">Stage ${plantData.growthStage}</text>
-                        </svg>
-                    </div>
-                `;
+                plantImage.innerHTML = `<img src="${imagePath}" alt="${plantData.species}">`;
             }
         }
         
         // Update plant message based on personality and state
         function updatePlantMessage() {
-            const messages = personalityMessages[plantData.personality];
+            // Choose the right message set based on plant species
+            let messages;
+            if (plantData.species === 'Weed') {
+                messages = weedMessages[plantData.personality];
+            } else {
+                messages = personalityMessages[plantData.personality];
+            }
+            
             let messageType;
             
             // Choose message type based on last action or state
@@ -1161,40 +1376,49 @@
             // For green color (around 120 hue), use a more solid green
             if (hue >= 100 && hue <= 140) {
                 device.style.backgroundColor = '#4CAF50'; // Solid green color
+                powerButton.style.backgroundColor = '#2E7D32'; // Darker green for power button
             } else {
                 device.style.backgroundColor = `hsl(${hue}, 100%, 85%)`;
+                // Make power button a darker version of the device color
+                powerButton.style.backgroundColor = `hsl(${hue}, 100%, 35%)`;
             }
             
             // Remove all pattern classes first
             device.classList.remove('pattern-striped', 'pattern-polka', 'pattern-hearts');
             
             // Update pattern
-            if (deviceCustomization.pattern === 'hearts') {
-                heartPattern.style.display = 'block';
-            } else if (deviceCustomization.pattern === 'striped') {
-                heartPattern.style.display = 'none';
+            if (deviceCustomization.pattern === 'striped') {
                 device.classList.add('pattern-striped');
             } else if (deviceCustomization.pattern === 'polka') {
-                heartPattern.style.display = 'none';
                 device.classList.add('pattern-polka');
-            } else {
-                // Plain
-                heartPattern.style.display = 'none';
+            } else if (deviceCustomization.pattern === 'hearts') {
+                device.classList.add('pattern-hearts');
+            }
+        }
+        
+        // Play sound with error handling
+        function playSound(sound) {
+            try {
+                sound.currentTime = 0;
+                sound.play().catch(error => {
+                    console.log("Sound playback prevented:", error);
+                });
+            } catch (error) {
+                console.log("Sound error:", error);
             }
         }
         
         // Power on the device
         function powerOn() {
             if (!isPoweredOn) {
-                try {
-                    powerUpSound.play().catch(() => {});
-                } catch (e) {}
-                
                 isPoweredOn = true;
+                playSound(powerOnSound);
                 screen.classList.remove('screen-off');
                 startupScreen.classList.remove('hidden');
                 startupScreen.style.display = 'flex';
                 screenContent.style.visibility = 'hidden';
+                adoptionScreen.style.display = 'none';
+                namingScreen.style.display = 'none';
                 
                 // Animate loading bar
                 let progress = 0;
@@ -1206,7 +1430,14 @@
                         clearInterval(loadingInterval);
                         setTimeout(() => {
                             startupScreen.style.display = 'none';
-                            screenContent.style.visibility = 'visible';
+                            
+                            // Show adoption screen if first time
+                            if (isFirstTime) {
+                                adoptionScreen.classList.remove('hidden');
+                                adoptionScreen.style.display = 'flex';
+                            } else {
+                                screenContent.style.visibility = 'visible';
+                            }
                         }, 500);
                     }
                 }, 100);
@@ -1219,14 +1450,13 @@
         // Power off the device
         function powerOff() {
             if (isPoweredOn) {
-                try {
-                    powerDownSound.play().catch(() => {});
-                } catch (e) {}
-                
                 isPoweredOn = false;
+                playSound(powerOffSound);
                 shutdownScreen.classList.remove('hidden');
                 shutdownScreen.style.display = 'flex';
                 screenContent.style.visibility = 'hidden';
+                adoptionScreen.style.display = 'none';
+                namingScreen.style.display = 'none';
                 
                 // Simple shutdown without animation
                 setTimeout(() => {
@@ -1256,9 +1486,7 @@
         function waterPlant() {
             if (!isPoweredOn) return;
             
-            try {
-                waterSound.play().catch(() => {});
-            } catch (e) {}
+            playSound(waterSound);
             
             // Check if already at 100% water before adding more
             if (plantData.waterLevel === 100) {
@@ -1280,9 +1508,7 @@
         function fertilizePlant() {
             if (!isPoweredOn || plantData.fertilizeCountdown > 0) return;
             
-            try {
-                fertilizeSound.play().catch(() => {});
-            } catch (e) {}
+            playSound(fertilizeSound);
             
             // Increase growth stage if not at max
             if (plantData.growthStage < 6) {
@@ -1306,16 +1532,15 @@
         // Open rename modal
         function openRenameModal() {
             if (!isPoweredOn) return;
-            try {
-                buttonSound.play().catch(() => {});
-            } catch (e) {}
             
+            playSound(buttonSound);
             document.getElementById('newPlantName').value = plantData.name;
             renameModal.style.display = 'flex';
         }
         
         // Save new plant name
         function saveNewName() {
+            playSound(buttonSound);
             const newName = document.getElementById('newPlantName').value.trim();
             if (newName) {
                 plantData.name = newName.substring(0, 12); // Limit to 12 characters
@@ -1328,12 +1553,14 @@
         // Open change plant modal
         function openChangePlantModal() {
             if (!isPoweredOn) return;
-            try {
-                buttonSound.play().catch(() => {});
-            } catch (e) {}
+            
+            playSound(buttonSound);
             
             // Update selected plant
             document.querySelectorAll('.plant-option').forEach(option => {
+                if (option.dataset.plant === 'Weed') {
+                    option.textContent = 'Marijuana';
+                }
                 option.classList.toggle('selected', option.dataset.plant === plantData.species);
             });
             
@@ -1342,6 +1569,7 @@
         
         // Show change plant confirmation
         function showChangePlantConfirmation() {
+            playSound(buttonSound);
             const selectedPlant = document.querySelector('.plant-option.selected');
             if (selectedPlant && selectedPlant.dataset.plant !== plantData.species) {
                 selectedNewPlant = selectedPlant.dataset.plant;
@@ -1355,11 +1583,15 @@
         
         // Confirm plant change
         function confirmPlantChange() {
+            playSound(buttonSound);
             if (selectedNewPlant) {
                 plantData.species = selectedNewPlant;
                 plantData.growthStage = 1; // Reset growth stage
+                plantData.lastFertilized = null; // Reset fertilize timer
+                plantData.fertilizeCountdown = 0; // Reset fertilize countdown
                 lastAction = 'change'; // Set last action to change
                 updateDisplay();
+                updateFertilizeButton(); // Update fertilize button state
                 selectedNewPlant = null;
             }
             changePlantConfirmModal.style.display = 'none';
@@ -1367,6 +1599,7 @@
         
         // Cancel plant change
         function cancelPlantChange() {
+            playSound(buttonSound);
             selectedNewPlant = null;
             changePlantConfirmModal.style.display = 'none';
             changePlantModal.style.display = 'flex'; // Go back to plant selection
@@ -1375,16 +1608,15 @@
         // Open stats modal
         function openStatsModal() {
             if (!isPoweredOn) return;
-            try {
-                buttonSound.play().catch(() => {});
-            } catch (e) {}
+            
+            playSound(buttonSound);
             
             // Update stats before showing
             document.getElementById('statName').textContent = plantData.name;
             document.getElementById('statWater').textContent = `${plantData.waterLevel}%`;
             document.getElementById('statAge').textContent = `${plantData.age} days`;
-            document.getElementById('statSpecies').textContent = plantData.species;
-            document.getElementById('statGrowth').textContent = plantData.growthStage;
+            document.getElementById('statSpecies').textContent = plantData.species === 'Weed' ? 'Marijuana' : plantData.species;
+            document.getElementById('statGrowth').textContent = growthStageNames[plantData.growthStage] || `Stage ${plantData.growthStage}`;
             document.getElementById('statWatered').textContent = plantData.timesWatered;
             document.getElementById('statPersonality').textContent = plantData.personality.charAt(0).toUpperCase() + plantData.personality.slice(1);
             
@@ -1394,9 +1626,8 @@
         // Open settings modal
         function openSettingsModal() {
             if (!isPoweredOn) return;
-            try {
-                buttonSound.play().catch(() => {});
-            } catch (e) {}
+            
+            playSound(buttonSound);
             
             // Update color picker
             document.getElementById('colorPicker').value = deviceCustomization.color;
@@ -1416,6 +1647,8 @@
         
         // Save settings
         function saveSettings() {
+            playSound(buttonSound);
+            
             // Save color
             deviceCustomization.color = parseInt(document.getElementById('colorPicker').value);
             
@@ -1438,24 +1671,19 @@
         
         // Open help modal
         function openHelpModal() {
-            try {
-                buttonSound.play().catch(() => {});
-            } catch (e) {}
-            
+            playSound(buttonSound);
             helpModal.style.display = 'flex';
         }
         
         // Open reset confirmation modal
         function openResetConfirmModal() {
-            try {
-                buttonSound.play().catch(() => {});
-            } catch (e) {}
-            
+            playSound(buttonSound);
             resetConfirmModal.style.display = 'flex';
         }
         
         // Reset plant
         function resetPlant() {
+            playSound(buttonSound);
             plantData = {
                 name: 'Sunny',
                 species: 'Sunflower',
@@ -1471,7 +1699,22 @@
             
             lastAction = null;
             wasOverwatered = false;
+            
+            // Show adoption screen
+            isFirstTime = true;
+            screenContent.style.visibility = 'hidden';
+            adoptionScreen.classList.remove('hidden');
+            adoptionScreen.style.display = 'flex';
+            namingScreen.style.display = 'none';
+            
+            // Reset plant selection
+            plantSelectionOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            adoptButton.disabled = true;
+            
             updateDisplay();
+            updateFertilizeButton(); // Reset fertilize button
             resetConfirmModal.style.display = 'none';
             settingsModal.style.display = 'none';
         }
@@ -1485,6 +1728,63 @@
             settingsModal.style.display = 'none';
             helpModal.style.display = 'none';
             resetConfirmModal.style.display = 'none';
+        }
+        
+        // Select plant for adoption (first step)
+        function selectPlantForAdoption() {
+            playSound(buttonSound);
+            const selectedPlant = document.querySelector('.plant-selection-option.selected');
+            
+            if (selectedPlant) {
+                selectedPlantSpecies = selectedPlant.dataset.plant;
+                
+                // Hide adoption screen and show naming screen
+                adoptionScreen.style.display = 'none';
+                namingScreen.classList.remove('hidden');
+                namingScreen.style.display = 'flex';
+                
+                // Focus on the name input
+                plantNameInput.focus();
+            }
+        }
+        
+        // Confirm plant name and complete adoption (second step)
+        function confirmPlantName() {
+            playSound(buttonSound);
+            const plantName = plantNameInput.value.trim();
+            
+            if (plantName && selectedPlantSpecies) {
+                // Set up the new plant
+                plantData.species = selectedPlantSpecies;
+                plantData.name = plantName.substring(0, 12); // Limit to 12 characters
+                plantData.growthStage = 1;
+                plantData.waterLevel = 25;
+                plantData.createdAt = new Date().toISOString();
+                
+                // Complete the adoption process
+                isFirstTime = false;
+                namingScreen.style.display = 'none';
+                screenContent.style.visibility = 'visible';
+                
+                // Reset the input field for next time
+                plantNameInput.value = '';
+                
+                // Update the display with the new plant
+                updateDisplay();
+                saveData();
+            }
+        }
+        
+        // Validate plant selection
+        function validatePlantSelection() {
+            const selectedPlant = document.querySelector('.plant-selection-option.selected');
+            adoptButton.disabled = !selectedPlant;
+        }
+        
+        // Validate plant name
+        function validatePlantName() {
+            const plantName = plantNameInput.value.trim();
+            confirmNameButton.disabled = !plantName;
         }
         
         // Setup event listeners
@@ -1511,15 +1811,33 @@
             btnStats.addEventListener('click', openStatsModal);
             btnSettings.addEventListener('click', openSettingsModal);
             
+            // Adoption screen
+            plantSelectionOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    playSound(buttonSound);
+                    plantSelectionOptions.forEach(p => p.classList.remove('selected'));
+                    option.classList.add('selected');
+                    validatePlantSelection();
+                });
+            });
+            
+            adoptButton.addEventListener('click', selectPlantForAdoption);
+            
+            // Naming screen
+            plantNameInput.addEventListener('input', validatePlantName);
+            confirmNameButton.addEventListener('click', confirmPlantName);
+            
             // Rename modal
             document.getElementById('saveRenameBtn').addEventListener('click', saveNewName);
             document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+                playSound(buttonSound);
                 renameModal.style.display = 'none';
             });
             
             // Change plant modal
             document.querySelectorAll('.plant-option').forEach(option => {
                 option.addEventListener('click', () => {
+                    playSound(buttonSound);
                     document.querySelectorAll('.plant-option').forEach(opt => {
                         opt.classList.remove('selected');
                     });
@@ -1529,6 +1847,7 @@
             
             document.getElementById('savePlantBtn').addEventListener('click', showChangePlantConfirmation);
             document.getElementById('cancelPlantBtn').addEventListener('click', () => {
+                playSound(buttonSound);
                 changePlantModal.style.display = 'none';
             });
             
@@ -1538,6 +1857,7 @@
             
             // Stats modal
             document.getElementById('closeStatsBtn').addEventListener('click', () => {
+                playSound(buttonSound);
                 statsModal.style.display = 'none';
             });
             
@@ -1545,14 +1865,17 @@
             document.getElementById('colorPicker').addEventListener('input', (e) => {
                 const hue = e.target.value;
                 if (hue >= 100 && hue <= 140) {
-                    device.style.backgroundColor = '#4CAF50'; // Solid green color
+                    device.style.backgroundColor = '#4CAF50';
+                    powerButton.style.backgroundColor = '#2E7D32'; // Darker green for power button
                 } else {
                     device.style.backgroundColor = `hsl(${hue}, 100%, 85%)`;
+                    powerButton.style.backgroundColor = `hsl(${hue}, 100%, 35%)`; // Darker version for power button
                 }
             });
             
             document.querySelectorAll('.pattern-option').forEach(option => {
                 option.addEventListener('click', () => {
+                    playSound(buttonSound);
                     document.querySelectorAll('.pattern-option').forEach(opt => {
                         opt.classList.remove('selected');
                     });
@@ -1562,6 +1885,7 @@
             
             document.querySelectorAll('.personality-option').forEach(option => {
                 option.addEventListener('click', () => {
+                    playSound(buttonSound);
                     document.querySelectorAll('.personality-option').forEach(opt => {
                         opt.classList.remove('selected');
                     });
@@ -1574,27 +1898,27 @@
             
             document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
             document.getElementById('cancelSettingsBtn').addEventListener('click', () => {
+                playSound(buttonSound);
                 settingsModal.style.display = 'none';
             });
             
             // Help modal
             document.getElementById('closeHelpBtn').addEventListener('click', () => {
+                playSound(buttonSound);
                 helpModal.style.display = 'none';
             });
             
             // Reset confirmation modal
             document.getElementById('confirmResetBtn').addEventListener('click', resetPlant);
             document.getElementById('cancelResetBtn').addEventListener('click', () => {
+                playSound(buttonSound);
                 resetConfirmModal.style.display = 'none';
             });
         }
         
         // Initialize the app
         init();
-        
-        // Start with device powered off
-        screen.classList.add('screen-off');
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9491c39ec549080c',t:'MTc0ODgxMjkyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9498412605f5e613',t:'MTc0ODg4MDk3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
 </body></html>
