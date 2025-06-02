@@ -8,7 +8,7 @@
         
         body {
             font-family: 'Press Start 2P', cursive;
-            background-image: url('Bkg.png');
+            background-image: url('Bkg.gif');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -21,7 +21,7 @@
         }
         
         .device {
-            position: relative;
+            position: absolute; /* Changed from relative to absolute */
             width: 450px;
             height: 750px;
             border-radius: 30px;
@@ -33,8 +33,22 @@
             align-items: center;
             padding: 25px;
             image-rendering: pixelated;
+            cursor: move; /* Shows a move cursor when hovering over the device */
+            top: 50%; /* Initial position */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
         }
         
+        /* Add a handle at the top of the device to make it clear it's draggable */
+        .drag-handle {
+            width: 100px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
         .device::before {
             content: '';
             position: absolute;
@@ -153,7 +167,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin: 0px auto auto 0px;
             position: relative;
             z-index: 2;
             background-color: rgba(195, 230, 203, 0.8);
@@ -173,7 +187,7 @@
         }
         
         .water-bar {
-            width: 120px;
+            width: 100px;
             height: 18px;
             background-color: #ddd;
             border: 3px solid #333;
@@ -249,12 +263,14 @@
         /* Species-specific styling */
         .plant-image.Sunflower img {
             max-height: 180px;
-            transform: translateY(-45px) translateX(5px); /* Raised more and moved right */
+            transform: translateY(-40px) translateX(5px); /* Raised more and moved right */
         }
         
         .plant-image.Weed img {
             max-height: 200px; /* Increased size */
             transform: translateY(30px); /* Lowered so bottom is under message box */
+            transform: scale(2);
+            top: -30px;
         }
         
         .plant-image.Rose img {
@@ -264,7 +280,7 @@
         
         .plant-image.Cactus img {
             max-height: 180px;
-            transform: translateY(-35px); /* Raised slightly */
+            transform: translateY(-30px) translateX(-10px); /* Raised slightly and moved left*/
         }
         
         .plant-message {
@@ -337,7 +353,7 @@
             font-size: 14px;
         }
         
-        .btn-fertilize.disabled {
+        .btn-fertilize.disabled, .btn-fertilize.matured {
             background-color: #aaa;
             cursor: not-allowed;
         }
@@ -1008,8 +1024,8 @@
         
         // Sound effects
         const buttonSound = new Audio('Sounds/button.mp3');
-        const fertilizeSound = new Audio('Sounds/fertilize.mp3');
-        const waterSound = new Audio('Sounds/water.mp3');
+        
+        
         const powerOnSound = new Audio('Sounds/on.mp3');
         const powerOffSound = new Audio('Sounds/off.mp3');
         
@@ -1239,6 +1255,7 @@
             
             // Update plant message based on last action
             updatePlantMessage();
+
             
             // Update stats
             document.getElementById('statName').textContent = plantData.name;
@@ -1250,6 +1267,9 @@
             document.getElementById('statPersonality').textContent = plantData.personality.charAt(0).toUpperCase() + plantData.personality.slice(1);
             
             saveData();
+            console.log(plantData.growthStage)
+            
+            
         }
         
         // Update plant image based on species and growth stage
@@ -1281,6 +1301,7 @@
         
         // Update plant message based on personality and state
         function updatePlantMessage() {
+            document.getElementById("plantMessage").style.display = "block"
             // Choose the right message set based on plant species
             let messages;
             if (plantData.species === 'Weed') {
@@ -1323,6 +1344,15 @@
                     lastAction = null;
                 }, 5000);
             }
+
+            
+            setTimeout(() => {
+                document.getElementById("plantMessage").style.display = 'none'
+            }, 7000);
+
+            
+
+            
         }
         
         // Start water timer (decreases water level over time)
@@ -1338,9 +1368,9 @@
         
         // Update fertilize button state
         function updateFertilizeButton() {
-            clearInterval(fertilizeTimer);
-            
-            if (plantData.fertilizeCountdown > 0) {
+            if (parseInt(plantData.growthStage) < 6) {clearInterval(fertilizeTimer)};
+            plantData.fertilizeCountdown = 0; // Reset fertilize countdown
+            if (plantData.fertilizeCountdown > 0 || (parseInt(plantData.growthStage) == 6)) {
                 btnFertilize.classList.add('disabled');
                 const hours = Math.floor(plantData.fertilizeCountdown);
                 const minutes = Math.floor((plantData.fertilizeCountdown - hours) * 60);
@@ -1364,12 +1394,14 @@
                 }, 60 * 1000); // Update every minute for the 24-hour countdown
             } else {
                 btnFertilize.classList.remove('disabled');
-                btnFertilize.textContent = 'FERTILIZE';
+                btnFertilize.textContent = (parseInt(plantData.growthStage) == 6 ? "I'M GROWN" : 'FERTILIZE');
             }
         }
         
         // Update device appearance based on customization
         function updateDeviceAppearance() {
+
+
             // Update color (using HSL for pastel colors)
             const hue = deviceCustomization.color;
             
@@ -1444,6 +1476,12 @@
                 
                 startWaterTimer();
                 updateFertilizeButton();
+
+                    
+                if (plantData.growthStage == 6) {
+                    btnFertilize.classList.add('disabled');
+                    btnFertilize.textContent = `I'M GROWN`;
+                }
             }
         }
         
@@ -1485,7 +1523,8 @@
         // Water the plant
         function waterPlant() {
             if (!isPoweredOn) return;
-            
+
+            const waterSound = new Audio(`Sounds/water${ Math.floor(Math.random() * 3) + 1 }.mp3`);
             playSound(waterSound);
             
             // Check if already at 100% water before adding more
@@ -1507,7 +1546,7 @@
         // Fertilize the plant
         function fertilizePlant() {
             if (!isPoweredOn || plantData.fertilizeCountdown > 0) return;
-            
+            const fertilizeSound = parseInt(plantData.growthStage) < 5 ? new Audio('Sounds/fertilize.mp3') : new Audio('Sounds/Mature.mp3');
             playSound(fertilizeSound);
             
             // Increase growth stage if not at max
@@ -1918,6 +1957,101 @@
         
         // Initialize the app
         init();
+    </script>
+    
+    <script>
+        // Make the device draggable
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        // Mouse events for desktop
+        device.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', endDrag);
+
+        // Touch events for mobile
+        device.addEventListener('touchstart', startDragTouch);
+        document.addEventListener('touchmove', dragTouch);
+        document.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            isDragging = true;
+            
+            // Calculate the offset from the mouse position to the top-left corner of the device
+            const rect = device.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            
+            // Prevent text selection during drag
+            e.preventDefault();
+        }
+
+        function startDragTouch(e) {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                
+                const touch = e.touches[0];
+                const rect = device.getBoundingClientRect();
+                offsetX = touch.clientX - rect.left;
+                offsetY = touch.clientY - rect.top;
+                
+                // Prevent scrolling during drag
+                e.preventDefault();
+            }
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            
+            // Remove the transform property and set direct positioning
+            device.style.transform = 'none';
+            device.style.left = (e.clientX - offsetX) + 'px';
+            device.style.top = (e.clientY - offsetY) + 'px';
+        }
+
+        function dragTouch(e) {
+            if (!isDragging || e.touches.length !== 1) return;
+            
+            const touch = e.touches[0];
+            
+            // Remove the transform property and set direct positioning
+            device.style.transform = 'none';
+            device.style.left = (touch.clientX - offsetX) + 'px';
+            device.style.top = (touch.clientY - offsetY) + 'px';
+            
+            // Prevent scrolling during drag
+            e.preventDefault();
+        }
+
+        function endDrag() {
+            isDragging = false;
+        }
+
+        // Keep the device within the viewport bounds
+        function keepInBounds() {
+            const rect = device.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            if (rect.right > viewportWidth) {
+                device.style.left = (viewportWidth - rect.width) + 'px';
+            }
+            
+            if (rect.bottom > viewportHeight) {
+                device.style.top = (viewportHeight - rect.height) + 'px';
+            }
+            
+            if (rect.left < 0) {
+                device.style.left = '0px';
+            }
+            
+            if (rect.top < 0) {
+                device.style.top = '0px';
+            }
+        }
+
+        // Check bounds when window is resized
+        window.addEventListener('resize', keepInBounds);
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9498412605f5e613',t:'MTc0ODg4MDk3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
