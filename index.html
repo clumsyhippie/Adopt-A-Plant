@@ -1444,6 +1444,7 @@
         function powerOn() {
             if (!isPoweredOn) {
                 isPoweredOn = true;
+                powerOnSound.volume = 0.5;
                 playSound(powerOnSound);
                 screen.classList.remove('screen-off');
                 startupScreen.classList.remove('hidden');
@@ -1489,6 +1490,7 @@
         function powerOff() {
             if (isPoweredOn) {
                 isPoweredOn = false;
+                powerOffSound.volume = 0.3;
                 playSound(powerOffSound);
                 shutdownScreen.classList.remove('hidden');
                 shutdownScreen.style.display = 'flex';
@@ -1547,6 +1549,7 @@
         function fertilizePlant() {
             if (!isPoweredOn || plantData.fertilizeCountdown > 0) return;
             const fertilizeSound = parseInt(plantData.growthStage) < 5 ? new Audio('Sounds/fertilize.mp3') : new Audio('Sounds/Mature.mp3');
+            fertilizeSound.volume = 0.3;
             playSound(fertilizeSound);
             
             // Increase growth stage if not at max
